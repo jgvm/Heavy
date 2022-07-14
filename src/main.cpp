@@ -6,7 +6,7 @@ Motor MotorRightUp(26, 25, 27, routeB);
 Motor MotorRightDown(12, 14, 13,routeB);
 Motor MotorLeftUp(2, 4, 15);
 Motor MotorLeftDown(17, 5, 16,routeB);
-
+//test
 int player = 0;
 int battery = 0;
 
