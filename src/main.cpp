@@ -2,10 +2,10 @@
 #include <Ps3Controller.h>
 #include <Motors.h>
 
-Motor MotorRightUp(26, 25, 27);
-Motor MotorRightDown(12, 14, 13);
-Motor MotorLeftDown(17, 5, 16);
-Motor MotorLeftUp(2, 4, 14);
+Motor MotorRightUp(26, 25, 27, routeB);
+Motor MotorRightDown(12, 14, 13,routeB);
+Motor MotorLeftUp(2, 4, 15);
+Motor MotorLeftDown(17, 5, 16,routeB);
 
 int player = 0;
 int battery = 0;
@@ -16,10 +16,70 @@ void notify(){
     Serial.print("Moved the left stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.lx, DEC);
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC);
+    // alfrente
+    if(Ps3.data.analog.stick.ly < 0 && (Ps3.data.analog.stick.lx > -62 && Ps3.data.analog.stick.lx < 62 )){
+      Serial.print(" Forward");
+      MotorRightUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+      MotorRightDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
+    } // atras
+    else if(Ps3.data.analog.stick.ly > 0 && (Ps3.data.analog.stick.lx > -62 && Ps3.data.analog.stick.lx < 62 )){
+      Serial.print(" Backward");
+      MotorRightUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
+      MotorRightDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+    } // derecha
+    else if((Ps3.data.analog.stick.ly > -62 && Ps3.data.analog.stick.ly < 62) && Ps3.data.analog.stick.lx > 0){
+      Serial.print(" Right");
+      MotorRightUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
+      MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorLeftUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
+      MotorLeftDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+    } // isquierda
+    else if(Ps3.data.analog.stick.ly == 0 && Ps3.data.analog.stick.lx < 0){
+      Serial.print(" Left");
+      MotorRightUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
+      MotorRightDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
+      MotorLeftUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
+      MotorLeftDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
+    } // derecha arriba
+    else if(Ps3.data.analog.stick.ly > 0 && Ps3.data.analog.stick.lx > 0){
+      Serial.print(" Forward Right");
+      MotorRightUp.Stop();
+      MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorLeftUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
+      MotorLeftDown.Stop();
+    } // isquierda arriba
+    else if(Ps3.data.analog.stick.ly > 0 && Ps3.data.analog.stick.lx < 0){
+      Serial.print(" Forward Left");
+      MotorRightUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorRightDown.Stop();
+      MotorLeftUp.Stop();
+      MotorLeftDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
+    } // derecha abajo
+    else if(Ps3.data.analog.stick.ly < 0 && Ps3.data.analog.stick.lx > 0){
+      Serial.print(" Backward Right");
+      MotorRightUp.Stop();
+      MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
+      MotorLeftUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
+      MotorLeftDown.Stop();
+    } // isquierda abajo
+    else if(Ps3.data.analog.stick.ly < 0 && Ps3.data.analog.stick.lx < 0){
+      Serial.print(" Backward Left");
+      MotorRightUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
+      MotorRightDown.Stop();
+      MotorLeftUp.Stop();
+      MotorLeftDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
+    } // 
+    Serial.print(" " + String(MotorRightUp.Speed()));
+    Serial.print(" " + String(MotorRightDown.Speed()));
+    Serial.print(" " + String(MotorLeftUp.Speed()));
+    Serial.print(" " + String(MotorLeftDown.Speed()));
+
     Serial.println();
-    if(Ps3.data.analog.stick.ly > 0 && Ps3.data.analog.stick.lx == 0){
-      
-    }
+
   }
 
   if( abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 ){
@@ -49,18 +109,6 @@ void notify(){
     Serial.print("Pressing the right trigger button: ");
     Serial.println(Ps3.data.analog.button.r2, DEC);
   }
-  //---------------------- Battery events ---------------------
-  if( battery != Ps3.data.status.battery ){
-    battery = Ps3.data.status.battery;
-    Serial.print("The controller battery is ");
-    if( battery == ps3_status_battery_charging )      Serial.println("charging");
-    else if( battery == ps3_status_battery_full )     Serial.println("FULL");
-    else if( battery == ps3_status_battery_high )     Serial.println("HIGH");
-    else if( battery == ps3_status_battery_low)       Serial.println("LOW");
-    else if( battery == ps3_status_battery_dying )    Serial.println("DYING");
-    else if( battery == ps3_status_battery_shutdown ) Serial.println("SHUTDOWN");
-    else Serial.println("UNDEFINED");
-  }
 }
 
 void onConnect(){
@@ -69,40 +117,21 @@ void onConnect(){
 
 void setup()
 {
-    Serial.begin(115200);
+  MotorRightUp.begin();
+  MotorRightDown.begin();
+  MotorLeftDown.begin();
+  MotorLeftUp.begin();
+  Serial.begin(115200);
+    
+  Ps3.attach(notify);
+  Ps3.attachOnConnect(onConnect);
+  Ps3.begin("01:02:03:04:05:06");
 
-    Ps3.attach(notify);
-    Ps3.attachOnConnect(onConnect);
-    Ps3.begin("01:02:03:04:05:06");
-
-    Serial.println("Ready.");
+  Serial.println("Ready.");
 }
 
 void loop()
 {
-    if(!Ps3.isConnected())
-        return;
-    //-------------------- Player LEDs -------------------
-
-
-    //------ Digital cross/square/triangle/circle buttons ------
-    if( Ps3.data.button.cross && Ps3.data.button.down )
-        Serial.println("Pressing both the down and cross buttons");
-    if( Ps3.data.button.square && Ps3.data.button.left )
-        Serial.println("Pressing both the square and left buttons");
-    if( Ps3.data.button.triangle && Ps3.data.button.up )
-        Serial.println("Pressing both the triangle and up buttons");
-    if( Ps3.data.button.circle && Ps3.data.button.right )
-        Serial.println("Pressing both the circle and right buttons");
-
-    if( Ps3.data.button.l1 && Ps3.data.button.r1 )
-        Serial.println("Pressing both the left and right bumper buttons");
-    if( Ps3.data.button.l2 && Ps3.data.button.r2 )
-        Serial.println("Pressing both the left and right trigger buttons");
-    if( Ps3.data.button.l3 && Ps3.data.button.r3 )
-        Serial.println("Pressing both the left and right stick buttons");
-    if( Ps3.data.button.select && Ps3.data.button.start )
-        Serial.println("Pressing both the select and start buttons");
-
-    delay(2000);
+  if(!Ps3.isConnected())
+    return;
 }

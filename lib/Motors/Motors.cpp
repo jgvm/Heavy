@@ -5,31 +5,9 @@
 */
 
 #include "Arduino.h"
+#include "analogWrite.h"
 #include "Motors.h"
 
-uint8_t Motor::_setSpeed(uint8_t speed){
-    _speed = map(0,100, 0,255, speed);
-    return _speed;
-};
-
-void Motor::_updateState(){
-    if(_state){
-        analogWrite(_pin_EN, _speed);
-        if(_direction == clockWise){
-            digitalWrite(_pin_IN1, true);
-            digitalWrite(_pin_IN2, false);
-        }
-        if(_direction == clockWise_R){
-            digitalWrite(_pin_IN1, false);
-            digitalWrite(_pin_IN2, true);
-        }
-    }
-    else{
-        digitalWrite(_pin_EN, 0);
-        digitalWrite(_pin_IN1, 0);
-        digitalWrite(_pin_IN2, 0);
-    }
-};
 Motor::Motor(uint8_t pin_EN, uint8_t pin_IN1, uint8_t pin_IN2, motorWires route){
     _pin_EN = pin_EN;
     if(route == routeA){
@@ -44,53 +22,48 @@ Motor::Motor(uint8_t pin_EN, uint8_t pin_IN1, uint8_t pin_IN2, motorWires route)
         _pin_IN1 = pin_IN1;
         _pin_IN2 = pin_IN2;
     }
-    pinMode(pin_EN, OUTPUT);
-    pinMode(pin_IN1, OUTPUT);
-    pinMode(pin_IN2, OUTPUT);
-    _setSpeed(0);
-    _state=false;
-    _updateState();
 }
-void Motor::Start(uint8_t speed, rotateDirection direction){
-    if(_speed != speed) _speed = speed;
-    if(_direction != direction) _direction = direction;
-    _updateState();
+
+void Motor::begin(){
+    pinMode(_pin_EN, OUTPUT);
+    analogWriteChannel(_pin_IN1);
+    analogWriteChannel(_pin_IN2);
+}
+
+void Motor::Move(uint8_t speed, rotateDirection direction){
+    Speed(speed);
+    Direction(direction);
 };
-void Motor::Start(){
-    _state = true;
-    _updateState();
+
+void Motor::Move(){
+    digitalWrite(_pin_EN, HIGH);
 };
+
 void Motor::Stop(){
-    _state = false;
-    _updateState();
-};
-void Motor::changeDirection(rotateDirection direction){
-    if(_direction != direction) {
-        _direction = direction;
-        _updateState();
-    }
-};
-void Motor::toggleDirection(){
-    if(_direction==clockWise){
-        _direction = clockWise_R;
-    }
-    else if(_direction==clockWise_R){
-            _direction=clockWise;
-    }
-    _updateState();
-
-};
-void Motor::changeSpeed(uint8_t speed){
-    if(_speed != speed) {
-        _speed = speed;
-        _updateState();
-    }
-};
-bool Motor::getState(){
-    return _state;
+    digitalWrite(_pin_EN, LOW);
 };
 
-HBridge::HBridge(Motor* left, Motor* right){
-    _left = left;
-    _right = right;
-}
+void Motor::Direction(rotateDirection direction){
+    _direction = direction;
+    if(_direction == Forward) {
+        analogWrite(_pin_IN1, int(map(_speed,0,100,0,255)), 255);
+        analogWrite(_pin_IN2, 0, 255);
+    }
+    else if(_direction == Backward) {
+        analogWrite(_pin_IN1, 0, 255);
+        analogWrite(_pin_IN2,int(map(_speed,0,100,0,255)), 255);
+    }
+};
+
+rotateDirection Motor::Direction(){
+    return _direction;
+};
+
+void Motor::Speed(uint8_t speed){
+    _speed = speed;
+    analogWrite(_pin_EN, int(map(_speed,0,100,0,255)), 255);
+};
+
+uint8_t Motor::Speed(){
+    return _speed;
+};
