@@ -12,22 +12,37 @@ int battery = 0;
 
 const int range = 20;
 
+// Values Booth Sticks -- Positives 
+#define StickLeftXp    map((Ps3.data.analog.stick.lx>0) ?  Ps3.data.analog.stick.lx:0, 0,128,0,100)
+#define StickLeftYp    map((Ps3.data.analog.stick.ly<0) ? -Ps3.data.analog.stick.ly:0, 0,128,0,100)
+#define StickRightXp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,100)
+#define StickRightYp   map((Ps3.data.analog.stick.ry<0) ? -Ps3.data.analog.stick.ry:0, 0,128,0,100)
 
-#define StickLeftX    abs(map(Ps3.data.analog.stick.lx,-128,128,-100,100))
-#define StickLeftY    abs(map(Ps3.data.analog.stick.ly,-128,128,-100,100))
-#define StickRightX   abs(map(Ps3.data.analog.stick.rx,-128,128,-100,100))
-#define StickRightY   abs(map(Ps3.data.analog.stick.ry,-128,128,-100,100))
+// Values Booth Sticks -- Negatives
+#define StickLeftXn    map((Ps3.data.analog.stick.lx<0) ? -Ps3.data.analog.stick.lx:0, 0,128,0,100)
+#define StickLeftYn    map((Ps3.data.analog.stick.ly>0) ?  Ps3.data.analog.stick.ly:0, 0,128,0,100)
+#define StickRightXn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,100)
+#define StickRightYn   map((Ps3.data.analog.stick.ry>0) ?  Ps3.data.analog.stick.ry:0, 0,128,0,100)
 
+// // Values Right Stick -- With maximum Stick Maximum Y 
+#define StickRightXrfp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
+#define StickRightXrfn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
+#define StickRightXrbp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
+#define StickRightXrbn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
+
+// Ranges Left Stick -- Forward, Backward, Right, Left
 #define StickLeftRangeForward   ((Ps3.data.analog.stick.ly < 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
 #define StickLeftRangeBackward  ((Ps3.data.analog.stick.ly > 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
 #define StickLeftRangeRight     ((Ps3.data.analog.stick.lx > 0) && (Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range ))
 #define StickLeftRangeLeft      ((Ps3.data.analog.stick.lx < 0) && (Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range ))
 
+// Ranges Left Stick -- Corners
 #define StickLeftRangeUpRight (Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx > range)
 #define StickLeftRangeDownRight (Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx > range)
 #define StickLeftRangeUpLeft (Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx < -range)
 #define StickLeftRangeDownLeft (Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx < -range)
 
+// Ranges Right Stick -- Forward, Backward, Right, Left
 #define StickRightRangeForward   ((Ps3.data.analog.stick.ry < 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
 #define StickRightRangeBackward  ((Ps3.data.analog.stick.ry > 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
 #define StickRightRangeRight     ((Ps3.data.analog.stick.rx > 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
@@ -111,10 +126,10 @@ void notify(){
     // frente
     if(StickLeftRangeForward){
       Serial.print(" Forward");
-      MotorRightUp.Move(StickLeftY , Forward);
-      MotorRightDown.Move(StickLeftY, Forward);
-      MotorLeftUp.Move(StickLeftY, Forward);
-      MotorLeftDown.Move(StickLeftY, Forward);
+      MotorRightUp.Move(StickLeftYp - StickRightXrfp, Forward);
+      MotorRightDown.Move(StickLeftYp - StickRightXrfp, Forward);
+      MotorLeftUp.Move(StickLeftYp - StickRightXn , Forward);
+      MotorLeftDown.Move(StickLeftYp - StickRightXn , Forward);
     } // atras
     else if(StickLeftRangeBackward){
       Serial.print(" Backward");
