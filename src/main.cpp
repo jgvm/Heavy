@@ -2,50 +2,55 @@
 #include <Ps3Controller.h>
 #include <Motors.h>
 
-Motor MotorRightUp(26, 25, 27, routeB);
-Motor MotorRightDown(12, 14, 13,routeB);
-Motor MotorLeftUp(2, 4, 15);
-Motor MotorLeftDown(17, 5, 16,routeB);
+Motor MotorRightUp(26, 25, 27);
+Motor MotorRightDown(12, 14, 13);
+Motor MotorLeftUp(2, 4, 15 );
+Motor MotorLeftDown(17, 5, 16, routeB);
 
 int player = 0;
 int battery = 0;
 
+const int range = 20;
+
 void notify(){
   //---------------- Analog stick value events ---------------
+
+  //Event right stick 
   if( abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2 ){
     Serial.print("Moved the left stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.lx, DEC);
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC);
     // alfrente
-    if(Ps3.data.analog.stick.ly < 0 && (Ps3.data.analog.stick.lx > -62 && Ps3.data.analog.stick.lx < 62 )){
+    if(Ps3.data.analog.stick.ly < 0 && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range )){
       Serial.print(" Forward");
       MotorRightUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
       MotorRightDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
-      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
-      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
-    } // atras
-    else if(Ps3.data.analog.stick.ly > 0 && (Ps3.data.analog.stick.lx > -62 && Ps3.data.analog.stick.lx < 62 )){
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+    }
+    // atras
+    else if(Ps3.data.analog.stick.ly > 0 && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range )){
       Serial.print(" Backward");
       MotorRightUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
       MotorRightDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
-      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
-      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Forward);
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.ly),0,128,0,100), Backward);
     } // derecha
-    else if((Ps3.data.analog.stick.ly > -62 && Ps3.data.analog.stick.ly < 62) && Ps3.data.analog.stick.lx > 0){
+    else if((Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range) && Ps3.data.analog.stick.lx > 0){
       Serial.print(" Right");
       MotorRightUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
       MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorLeftUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorLeftDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
+    } // isquierda
+    else if((Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range) && Ps3.data.analog.stick.lx < 0){
+      Serial.print(" Left");
+      MotorRightUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
+      MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
       MotorLeftUp.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Backward);
       MotorLeftDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
-    } // isquierda
-    else if(Ps3.data.analog.stick.ly == 0 && Ps3.data.analog.stick.lx < 0){
-      Serial.print(" Left");
-      MotorRightUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
-      MotorRightDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
-      MotorLeftUp.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
-      MotorLeftDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Backward);
-    } // derecha arriba
-    else if(Ps3.data.analog.stick.ly > 0 && Ps3.data.analog.stick.lx > 0){
+    } /* // derecha arriba
+    else if((Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range) && Ps3.data.analog.stick.lx < 0){
       Serial.print(" Forward Right");
       MotorRightUp.Stop();
       MotorRightDown.Move(map(Ps3.data.analog.stick.lx,0,128,0,100), Forward);
@@ -72,7 +77,8 @@ void notify(){
       MotorRightDown.Stop();
       MotorLeftUp.Stop();
       MotorLeftDown.Move(map(Ps3.data.analog.stick.ly,0,128,0,100), Forward);
-    } // 
+    } //  */
+
     Serial.print(" " + String(MotorRightUp.Speed()));
     Serial.print(" " + String(MotorRightDown.Speed()));
     Serial.print(" " + String(MotorLeftUp.Speed()));
@@ -81,12 +87,28 @@ void notify(){
     Serial.println();
 
   }
-
+  //Event right stick 
   if( abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 ){
     Serial.print("Moved the right stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.rx, DEC);
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ry, DEC);
     Serial.println();
+    // rotacion derecha
+    if((Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range) && Ps3.data.analog.stick.rx > 0){
+      Serial.print(" Rotate Right");
+      MotorRightUp.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Forward);
+      MotorRightDown.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Forward);
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Backward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Backward);
+    }// rotacion isquierda
+    else if((Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range) && Ps3.data.analog.stick.rx < 0){
+      Serial.print(" Rotate Left");
+      MotorRightUp.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Backward);
+      MotorRightDown.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Backward);
+      MotorLeftUp.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Forward);
+      MotorLeftDown.Move(map(abs(Ps3.data.analog.stick.rx),0,128,0,100), Forward);
+    } 
+
   }
 
   //---------- Analog shoulder/trigger button events ----------
