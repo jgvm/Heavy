@@ -30,40 +30,59 @@ void Motor::begin(){
     analogWriteChannel(_pin_IN2);
 }
 
-void Motor::Move(uint8_t speed, rotateDirection direction){
-    Speed(speed);
-    Direction(direction);
-};
-
-void Motor::Move(){
+void Motor::Speed(int8_t speed){
+    _speed = speed;
+    digitalWrite(_pin_EN, LOW);
+    if(_speed == 0) {
+        _direction = Stoped;
+        analogWrite(_pin_IN1, 0, 255);
+        analogWrite(_pin_IN2, 0, 255);
+    }
+    else if(_speed > 0) {
+        _direction = Forward;
+        analogWrite(_pin_IN1, abs(map(_speed,0,100,0,255)), 255);
+        analogWrite(_pin_IN2, 0, 255);
+    }
+    else if(_speed < 0) {
+        _direction = Backward;
+        analogWrite(_pin_IN1, 0, 255);
+        analogWrite(_pin_IN2, abs(map(_speed,0,100,0,255)), 255);
+    }
     digitalWrite(_pin_EN, HIGH);
 };
 
-void Motor::Stop(){
+void Motor::Speed(int8_t speed, motorDirection forceDirection){
+    _speed = abs(speed);
+    _direction = forceDirection;
     digitalWrite(_pin_EN, LOW);
-};
-
-void Motor::Direction(rotateDirection direction){
-    _direction = direction;
-    if(_direction == Forward) {
-        analogWrite(_pin_IN1, int(map(_speed,0,100,0,255)), 255);
+    if(forceDirection == Forward) {
+        analogWrite(_pin_IN1, abs(map(_speed,0,100,0,255)), 255);
         analogWrite(_pin_IN2, 0, 255);
     }
-    else if(_direction == Backward) {
+    else if(forceDirection == Backward) {
         analogWrite(_pin_IN1, 0, 255);
-        analogWrite(_pin_IN2,int(map(_speed,0,100,0,255)), 255);
+        analogWrite(_pin_IN2, abs(map(_speed,0,100,0,255)), 255);
     }
+    else{
+        analogWrite(_pin_IN1, 0, 255);
+        analogWrite(_pin_IN2, 0, 255);
+    }
+    digitalWrite(_pin_EN, HIGH);
+
 };
 
-rotateDirection Motor::Direction(){
-    return _direction;
-};
-
-void Motor::Speed(uint8_t speed){
-    _speed = speed;
-    analogWrite(_pin_EN, int(map(_speed,0,100,0,255)), 255);
-};
-
-uint8_t Motor::Speed(){
+int8_t Motor::Speed(){
     return _speed;
+};
+
+motorDirection Motor::Direction(){
+    if(_speed == 0) {
+        return Stoped;
+    }
+    else if(_speed > 0) {
+        return Forward;
+    }
+    else if(_speed < 0) {
+        return Backward;
+    }
 };

@@ -12,173 +12,157 @@ int battery = 0;
 
 const int range = 20;
 
-// Values Booth Sticks -- Positives 
-#define StickLeftXp    map((Ps3.data.analog.stick.lx>0) ?  Ps3.data.analog.stick.lx:0, 0,128,0,100)
-#define StickLeftYp    map((Ps3.data.analog.stick.ly<0) ? -Ps3.data.analog.stick.ly:0, 0,128,0,100)
-#define StickRightXp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,100)
-#define StickRightYp   map((Ps3.data.analog.stick.ry<0) ? -Ps3.data.analog.stick.ry:0, 0,128,0,100)
+// Values Left Stick
+#define StickLeftY    map(-Ps3.data.analog.stick.ly, -128, 128, -100, 100)
+#define StickLeftX    map(Ps3.data.analog.stick.lx, -128, 128, -100, 100)
+// Values Right Stick
+#define StickRightY    map(-Ps3.data.analog.stick.ry, -128, 128, -100, 100)
+#define StickRightX    map(Ps3.data.analog.stick.rx, -128, 128, -100, 100)
 
-// Values Booth Sticks -- Negatives
-#define StickLeftXn    map((Ps3.data.analog.stick.lx<0) ? -Ps3.data.analog.stick.lx:0, 0,128,0,100)
-#define StickLeftYn    map((Ps3.data.analog.stick.ly>0) ?  Ps3.data.analog.stick.ly:0, 0,128,0,100)
-#define StickRightXn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,100)
-#define StickRightYn   map((Ps3.data.analog.stick.ry>0) ?  Ps3.data.analog.stick.ry:0, 0,128,0,100)
 
-// // Values Right Stick -- With maximum Stick Maximum Y 
-#define StickRightXrfp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
-#define StickRightXrfn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
-#define StickRightXrbp   map((Ps3.data.analog.stick.rx>0) ?  Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
-#define StickRightXrbn   map((Ps3.data.analog.stick.rx<0) ? -Ps3.data.analog.stick.rx:0, 0,128,0,Ps3.data.analog.stick.ly)
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
-#define StickLeftRangeForward   ((Ps3.data.analog.stick.ly < 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
-#define StickLeftRangeBackward  ((Ps3.data.analog.stick.ly > 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
-#define StickLeftRangeRight     ((Ps3.data.analog.stick.lx > 0) && (Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range ))
-#define StickLeftRangeLeft      ((Ps3.data.analog.stick.lx < 0) && (Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.ly < range ))
+#define StickLeftForward   ((-Ps3.data.analog.stick.ly > 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
+#define StickLeftBackward  ((-Ps3.data.analog.stick.ly < 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
+#define StickLeftRight     ((Ps3.data.analog.stick.lx > 0) && (-Ps3.data.analog.stick.ly < range && -Ps3.data.analog.stick.ly < range ))
+#define StickLeftLeft      ((Ps3.data.analog.stick.lx < 0) && (-Ps3.data.analog.stick.ly < -range && -Ps3.data.analog.stick.ly < range ))
 
-// Ranges Left Stick -- Corners
-#define StickLeftRangeUpRight (Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx > range)
-#define StickLeftRangeDownRight (Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx > range)
-#define StickLeftRangeUpLeft (Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx < -range)
-#define StickLeftRangeDownLeft (Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx < -range)
+#define StickLeftUpRight   (-Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.lx > range)
+#define StickLeftDownRight (-Ps3.data.analog.stick.ly < range && Ps3.data.analog.stick.lx > range)
+#define StickLeftUpLeft    (-Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.lx < -range)
+#define StickLeftDownLeft  (-Ps3.data.analog.stick.ly < range && Ps3.data.analog.stick.lx < -range)
 
 // Ranges Right Stick -- Forward, Backward, Right, Left
-#define StickRightRangeForward   ((Ps3.data.analog.stick.ry < 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
-#define StickRightRangeBackward  ((Ps3.data.analog.stick.ry > 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
-#define StickRightRangeRight     ((Ps3.data.analog.stick.rx > 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
-#define StickRightRangeLeft      ((Ps3.data.analog.stick.rx < 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
+#define StickRightForward  ((-Ps3.data.analog.stick.ry < 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
+#define StickRightBackward ((-Ps3.data.analog.stick.ry > 0) && (Ps3.data.analog.stick.rx > -range && Ps3.data.analog.stick.rx < range ))
+#define StickRightRight    ((Ps3.data.analog.stick.rx > 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
+#define StickRightLeft     ((Ps3.data.analog.stick.rx < 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
+
+#define StickRightUpRight   (-Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx > range)
+#define StickRightDownRight (-Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx > range)
+#define StickRightUpLeft    (-Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx < -range)
+#define StickRightDownLeft  (-Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx < -range)
+
+
 
 void notify(){
   //---------------- Analog stick value events ---------------
   //Event booth Sticks
   if((abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2) && (abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 )){
     // Frente --- Derecha
-    if(StickLeftRangeForward && StickRightRangeRight){
+    if(StickLeftForward && StickRightRight){
       Serial.print(" Forward ----- Right");
-      MotorRightUp.Move(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
-      MotorRightDown.Move(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
-      MotorLeftUp.Move(StickLeftY, Forward);
-      MotorLeftDown.Move(StickLeftY, Forward);
+      MotorRightUp.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
+      MotorRightDown.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
+      MotorLeftUp.Speed(StickLeftY, Forward);
+      MotorLeftDown.Speed(StickLeftY, Forward);
     } 
     // Frente --- Izquierda
-    else if(StickLeftRangeForward && StickRightRangeLeft){
+    else if(StickLeftForward && StickRightLeft){
       Serial.print(" Forward ----- Left");
-      MotorRightUp.Move(StickLeftY, Forward);
-      MotorRightDown.Move(StickLeftY, Forward);
-      MotorLeftUp.Move(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
-      MotorLeftDown.Move(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
+      MotorRightUp.Speed(StickLeftY, Forward);
+      MotorRightDown.Speed(StickLeftY, Forward);
+      MotorLeftUp.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
+      MotorLeftDown.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
     } 
     // Atras --- Derecha
-    else if(StickLeftRangeBackward && StickRightRangeRight){
+    else if(StickLeftBackward && StickRightRight){
       Serial.print(" Backward ----- Right");
-      MotorRightUp.Move(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
-      MotorRightDown.Move(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
-      MotorLeftUp.Move(StickLeftY, Backward);
-      MotorLeftDown.Move(StickLeftY, Backward);
+      MotorRightUp.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
+      MotorRightDown.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
+      MotorLeftUp.Speed(StickLeftY, Backward);
+      MotorLeftDown.Speed(StickLeftY, Backward);
     } 
     // Atras --- Izquierda
-    else if(StickLeftRangeBackward && StickRightRangeLeft){
+    else if(StickLeftBackward && StickRightLeft){
       Serial.print(" Backward ----- Left");
-      MotorRightUp.Move(StickLeftY, Backward);
-      MotorRightDown.Move(StickLeftY, Backward);
-      MotorLeftUp.Move(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
-      MotorLeftDown.Move(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
+      MotorRightUp.Speed(StickLeftY, Backward);
+      MotorRightDown.Speed(StickLeftY, Backward);
+      MotorLeftUp.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
+      MotorLeftDown.Speed(StickLeftY - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
     } 
     // Derecha --- Derecha
-    else if(StickLeftRangeRight && StickRightRangeRight){
+    else if(StickLeftRight && StickRightRight){
       Serial.print(" Right --- Right");
-      MotorRightUp.Move(StickLeftX, Backward);
-      MotorRightDown.Move(StickLeftX - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
-      MotorLeftUp.Move(StickLeftX, Forward);
-      MotorLeftDown.Move(StickLeftX - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
+      MotorRightUp.Speed(StickLeftX, Backward);
+      MotorRightDown.Speed(StickLeftX - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
+      MotorLeftUp.Speed(StickLeftX, Forward);
+      MotorLeftDown.Speed(StickLeftX - map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
     }
     // Derecha --- Izquierda
-    else if(StickLeftRangeRight && StickRightRangeLeft){
+    else if(StickLeftRight && StickRightLeft){
       Serial.print(" Right --- Left");
-      MotorRightUp.Move(StickLeftX - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
-      MotorRightDown.Move(StickLeftX, Forward);
-      MotorLeftUp.Move(StickLeftX - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
-      MotorLeftDown.Move(StickLeftX, Backward);
+      MotorRightUp.Speed(StickLeftX - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
+      MotorRightDown.Speed(StickLeftX, Forward);
+      MotorLeftUp.Speed(StickLeftX - map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
+      MotorLeftDown.Speed(StickLeftX, Backward);
     }
     // Izquierda --- Derecha
-    else if(StickLeftRangeLeft && StickRightRangeRight){
+    else if(StickLeftLeft && StickRightRight){
       Serial.print(" Left --- Right");
-      MotorRightUp.Move(StickLeftX -  map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
-      MotorRightDown.Move(StickLeftX, Forward);
-      MotorLeftUp.Move(StickLeftX -  map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
-      MotorLeftDown.Move(StickLeftX, Backward);
+      MotorRightUp.Speed(StickLeftX -  map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Backward);
+      MotorRightDown.Speed(StickLeftX, Forward);
+      MotorLeftUp.Speed(StickLeftX -  map(Ps3.data.analog.stick.rx,0,128,0,StickLeftY), Forward);
+      MotorLeftDown.Speed(StickLeftX, Backward);
     }
     // Izquierda --- Izquierda
-    else if(StickLeftRangeLeft && StickRightRangeLeft){
+    else if(StickLeftLeft && StickRightLeft){
       Serial.print(" Left --- Left");
-      MotorRightUp.Move(StickLeftX, Backward);
-      MotorRightDown.Move(StickLeftX -  map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
-      MotorLeftUp.Move(StickLeftX, Forward);
-      MotorLeftDown.Move(StickLeftX -  map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
+      MotorRightUp.Speed(StickLeftX, Backward);
+      MotorRightDown.Speed(StickLeftX -  map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Forward);
+      MotorLeftUp.Speed(StickLeftX, Forward);
+      MotorLeftDown.Speed(StickLeftX -  map(Ps3.data.analog.stick.rx,-128,0,0,StickLeftY), Backward);
     }
   }
 
-  //Event right stick 
+
+  //Event Left stick 
   else if( abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2 ){
     Serial.print("Moved the left stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.lx, DEC);
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC);
-    // frente
-    if(StickLeftRangeForward){
-      Serial.print(" Forward");
-      MotorRightUp.Move(StickLeftYp - StickRightXrfp, Forward);
-      MotorRightDown.Move(StickLeftYp - StickRightXrfp, Forward);
-      MotorLeftUp.Move(StickLeftYp - StickRightXn , Forward);
-      MotorLeftDown.Move(StickLeftYp - StickRightXn , Forward);
-    } // atras
-    else if(StickLeftRangeBackward){
-      Serial.print(" Backward");
-      MotorRightUp.Move(StickLeftY, Backward);
-      MotorRightDown.Move(StickLeftY, Backward);
-      MotorLeftUp.Move(StickLeftY, Backward);
-      MotorLeftDown.Move(StickLeftY, Backward);
-    } // derecha
-    else if(StickLeftRangeRight){
+    // Forward and Backward
+    if(StickLeftForward || StickLeftBackward){
+      Serial.print(" Straight ahead");
+      MotorRightUp.   Speed(StickLeftY);
+      MotorRightDown. Speed(StickLeftY);
+      MotorLeftUp.    Speed(StickLeftY);
+      MotorLeftDown.  Speed(StickLeftY);
+    } // Side by side
+    else if(StickLeftRight){
       Serial.print(" Right");
-      MotorRightUp.Move(StickLeftX, Backward);
-      MotorRightDown.Move(StickLeftX, Forward);
-      MotorLeftUp.Move(StickLeftX, Forward);
-      MotorLeftDown.Move(StickLeftX, Backward);
-    } // isquierda
-    else if(StickLeftRangeLeft){
-      Serial.print(" Left");
-      MotorRightUp.Move(StickLeftX, Forward);
-      MotorRightDown.Move(StickLeftX, Backward);
-      MotorLeftUp.Move(StickLeftX, Backward);
-      MotorLeftDown.Move(StickLeftX, Forward);
-    } // arriba derecha 
-    else if(StickLeftRangeUpRight){
+      MotorRightUp.Speed(-StickLeftX);
+      MotorRightDown.Speed(StickLeftX);
+      MotorLeftUp.Speed(StickLeftX);
+      MotorLeftDown.Speed(-StickLeftX);
+    } 
+    else if(StickLeftUpRight){
       Serial.print(" Up Right");
-      MotorRightUp.Stop();
-      MotorRightDown.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2, 0, 128, 0, 100), Forward);
-      MotorLeftUp.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2, 0, 128, 0, 100), Forward);
-      MotorLeftDown.Stop();
+      MotorRightUp.Speed(0);
+      MotorRightDown.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2, 0, 128, 0, 100), Forward);
+      MotorLeftUp.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2, 0, 128, 0, 100), Forward);
+      MotorLeftDown.Speed(0);
     } // abajo derecha 
-    else if(StickLeftRangeDownRight){
+    else if(StickLeftDownRight){
       Serial.print(" Down Right");
-       MotorRightUp.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
-      MotorRightDown.Stop();
-      MotorLeftUp.Stop();
-      MotorLeftDown.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
+       MotorRightUp.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
+      MotorRightDown.Speed(0);
+      MotorLeftUp.Speed(0);
+      MotorLeftDown.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
     } // arriba isquierda 
-    else if(StickLeftRangeUpLeft){
+    else if(StickLeftUpLeft){
       Serial.print(" Up Left");
-      MotorRightUp.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Forward);
-      MotorRightDown.Stop();
-      MotorLeftUp.Stop();
-      MotorLeftDown.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Forward);
+      MotorRightUp.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Forward);
+      MotorRightDown.Speed(0);
+      MotorLeftUp.Speed(0);
+      MotorLeftDown.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Forward);
     } // abajo isquierda 
-    else if(StickLeftRangeDownLeft){
+    else if(StickLeftDownLeft){
       Serial.print(" Down Left");
-      MotorRightUp.Stop();
-      MotorRightDown.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
-      MotorLeftUp.Move(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
-      MotorLeftDown.Stop();
+      MotorRightUp.Speed(0);
+      MotorRightDown.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
+      MotorLeftUp.Speed(map((Ps3.data.analog.stick.ly + Ps3.data.analog.stick.lx)/2,0,128,0,100), Backward);
+      MotorLeftDown.Speed(0);
     }
 
     Serial.print(" " + String(MotorRightUp.Speed()));
@@ -187,7 +171,6 @@ void notify(){
     Serial.print(" " + String(MotorLeftDown.Speed()));
 
     Serial.println();
-
   }
   //Event right stick 
   else if( abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 ){
@@ -196,19 +179,19 @@ void notify(){
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ry, DEC);
     Serial.println();
     // rotacion derecha
-    if(StickRightRangeRight){
+    if(StickRightRight){
       Serial.print(" Rotate Right");
-      MotorRightUp.Move(StickRightX, Forward);
-      MotorRightDown.Move(StickRightX, Forward);
-      MotorLeftUp.Move(StickRightX, Backward);
-      MotorLeftDown.Move(StickRightX, Backward);
+      MotorRightUp.Speed(StickRightX, Forward);
+      MotorRightDown.Speed(StickRightX, Forward);
+      MotorLeftUp.Speed(StickRightX, Backward);
+      MotorLeftDown.Speed(StickRightX, Backward);
     }// rotacion isquierda
-    else if(StickRightRangeLeft){
+    else if(StickRightLeft){
       Serial.print(" Rotate Left");
-      MotorRightUp.Move(StickRightX, Backward);
-      MotorRightDown.Move(StickRightX, Backward);
-      MotorLeftUp.Move(StickRightX, Forward);
-      MotorLeftDown.Move(StickRightX, Forward);
+      MotorRightUp.Speed(StickRightX, Backward);
+      MotorRightDown.Speed(StickRightX, Backward);
+      MotorLeftUp.Speed(StickRightX, Forward);
+      MotorLeftDown.Speed(StickRightX, Forward);
     } 
 
   }

@@ -25,16 +25,14 @@ Backward:
 #include "Arduino.h"
 #include "analogWrite.h"
 
-
-
 enum motorWires {
   routeA,
   routeB
 };
-
-enum rotateDirection {
+enum motorDirection {
   Forward,
   Backward,
+  Stoped
 };
 
 class Motor{
@@ -42,13 +40,10 @@ class Motor{
     //Motor (Pin_EN, Pin_IN1, Pin_IN2, route = routeA)
     Motor(uint8_t pin_EN, uint8_t pin_IN1, uint8_t pin_IN2, motorWires route = routeA);
     void begin();
-    void Move(uint8_t speed, rotateDirection direction);
-    void Move();
-    void Stop();
-    void Direction(rotateDirection direction);
-    rotateDirection Direction();
-    void Speed(uint8_t speed);
-    uint8_t Speed();
+    void Speed(int8_t speed);
+    void Speed(int8_t speed, motorDirection forceDirection);
+    int8_t Speed();
+    motorDirection Direction();
 
   private:
     //Pins
@@ -58,8 +53,9 @@ class Motor{
     uint8_t _pin_IN2;
 
     //Values
-    uint8_t _speed;
-    rotateDirection _direction;
-    rotateDirection _direction_prev;
+    int8_t _speed;
+    motorDirection _direction;
+
+
 };
 #endif
