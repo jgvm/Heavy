@@ -42,10 +42,6 @@ const int range = 20;
 #define StickRightUpLeft    (-Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx < -range)
 #define StickRightDownLeft  (-Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx < -range)
 
-// Special Values Right Stick
-#define StickRightXp    (Ps3.data.analog.stick.rx > 0 ? map(Ps3.data.analog.stick.rx, 0,  128,  0,  100)  : 0)
-#define StickRightXn    (Ps3.data.analog.stick.rx < 0 ? map(Ps3.data.analog.stick.rx, -128, 0,  -100, 0)  : 0)  
-
 void notify(){
   //---------------- Analog stick value events ---------------
   //Event booth Sticks
