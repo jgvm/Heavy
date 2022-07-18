@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "ps3.h": "c",
+        "esp_system.h": "c"
+    }
+}

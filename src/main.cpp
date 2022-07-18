@@ -2,6 +2,8 @@
 #include <Ps3Controller.h>
 #include <Motors.h>
 
+
+
 Motor MotorRightUp(26, 25, 27);
 Motor MotorRightDown(12, 14, 13);
 Motor MotorLeftUp(2, 4, 15 );
@@ -126,8 +128,8 @@ void notify(){
       MotorLeftUp.    Speed(StickLeftY);
       MotorLeftDown.  Speed(StickLeftY);
     } // Side by side
-    else if(StickLeftRight){
-      // Serial.print(" Right");
+    else if(StickLeftRight || StickLeftLeft){
+      // Serial.print(" Right or Right");
       MotorRightUp.   Speed(-StickLeftX);
       MotorRightDown. Speed(StickLeftX);
       MotorLeftUp.    Speed(StickLeftX);
@@ -202,7 +204,14 @@ void notify(){
 }
 
 void onConnect(){
-    Serial.println("Connected.");
+  Serial.println("Connected.");
+}
+
+void onDisconnect(){
+  Ps3.end();
+  Serial.println("Connecting...");
+  Ps3.begin();
+  while(!Ps3.isConnected());
 }
 
 void setup()
@@ -215,7 +224,9 @@ void setup()
     
   Ps3.attach(notify);
   Ps3.attachOnConnect(onConnect);
+  Ps3.attachOnDisconnect(onDisconnect);
   Ps3.begin();
+  
 
   Serial.println("Ready.");
 }
