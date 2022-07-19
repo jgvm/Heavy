@@ -2,8 +2,6 @@
 #include <Ps3Controller.h>
 #include <Motors.h>
 
-
-
 Motor MotorRightUp(26, 25, 27);
 Motor MotorRightDown(12, 14, 13);
 Motor MotorLeftUp(2, 4, 15 );
@@ -25,8 +23,8 @@ const int range = 20;
 // Ranges Left Stick -- Forward, Backward, Right, Left
 #define StickLeftForward   ((-Ps3.data.analog.stick.ly > 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
 #define StickLeftBackward  ((-Ps3.data.analog.stick.ly < 0) && (Ps3.data.analog.stick.lx > -range && Ps3.data.analog.stick.lx < range ))
-#define StickLeftRight     ((Ps3.data.analog.stick.lx > 0) && (-Ps3.data.analog.stick.ly < range && -Ps3.data.analog.stick.ly < range ))
-#define StickLeftLeft      ((Ps3.data.analog.stick.lx < 0) && (-Ps3.data.analog.stick.ly < -range && -Ps3.data.analog.stick.ly < range ))
+#define StickLeftRight     ((Ps3.data.analog.stick.lx > 0) && (-Ps3.data.analog.stick.ly > -range && -Ps3.data.analog.stick.ly < range ))
+#define StickLeftLeft      ((Ps3.data.analog.stick.lx < 0) && (-Ps3.data.analog.stick.ly > -range && -Ps3.data.analog.stick.ly < range ))
 
 #define StickLeftUpRight   (-Ps3.data.analog.stick.ly > -range && Ps3.data.analog.stick.lx > range)
 #define StickLeftDownRight (-Ps3.data.analog.stick.ly < range && Ps3.data.analog.stick.lx > range)
@@ -39,15 +37,11 @@ const int range = 20;
 #define StickRightRight    ((Ps3.data.analog.stick.rx > 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
 #define StickRightLeft     ((Ps3.data.analog.stick.rx < 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
 
-#define StickRightUpRight   (-Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx > range)
-#define StickRightDownRight (-Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx > range)
-#define StickRightUpLeft    (-Ps3.data.analog.stick.ly < -range && Ps3.data.analog.stick.lx < -range)
-#define StickRightDownLeft  (-Ps3.data.analog.stick.ly > range && Ps3.data.analog.stick.lx < -range)
 
 void notify(){
   //---------------- Analog stick value events ---------------
   //Event booth Sticks
-  if((abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2) && (abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 )){
+/*   if((abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2) && (abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2 )){
     // Frente --- Derecha
     if(StickLeftForward && StickRightRight){
       // Serial.print(" Forward ----- Right");
@@ -116,38 +110,38 @@ void notify(){
 
 
   //Event Left stick 
-  else if( abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2 ){
-/*     Serial.print("Moved the left stick:");
+  else  */if( abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2 ){
+    Serial.print("Moved the left stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.lx, DEC);
-    Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC); */
+    Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC);
     // Forward and Backward
     if(StickLeftForward || StickLeftBackward){
-      // Serial.print(" Forward or Backward");
+      Serial.print(" Forward or Backward");
       MotorRightUp.   Speed(StickLeftY);
       MotorRightDown. Speed(StickLeftY);
       MotorLeftUp.    Speed(StickLeftY);
       MotorLeftDown.  Speed(StickLeftY);
     } // Side by side
     else if(StickLeftRight || StickLeftLeft){
-      // Serial.print(" Right or Right");
+      Serial.print(" Right or Left");
       MotorRightUp.   Speed(-StickLeftX);
       MotorRightDown. Speed(StickLeftX);
       MotorLeftUp.    Speed(StickLeftX);
       MotorLeftDown.  Speed(-StickLeftX);
     } 
     else if(StickLeftUpRight || StickLeftDownLeft){
-      // Serial.print(" Up Right or Down Left");
+      Serial.print(" Up Right or Down Left");
       MotorRightUp.   Speed(0);
-      MotorRightDown. Speed(map(Ps3.data.analog.stick.lx, -128, 128, -100, 100));
-      MotorLeftUp.    Speed(map(Ps3.data.analog.stick.ly, -128, 128, -100, 100));
+      MotorRightDown. Speed(StickLeftX);
+      MotorLeftUp.    Speed(StickLeftY);
       MotorLeftDown.  Speed(0);
     } // abajo derecha 
     else if(StickLeftDownRight || StickLeftUpLeft){
-      // Serial.print(" Down Right or Up Left");
-      MotorRightUp.   Speed(map(Ps3.data.analog.stick.lx, -128, 128, -100, 100));
+      Serial.print(" Down Right or Up Left");
+      MotorRightUp.   Speed(-StickLeftX);
       MotorRightDown. Speed(0);
       MotorLeftUp.    Speed(0);
-      MotorLeftDown.  Speed(map(Ps3.data.analog.stick.ly, -128, 128, -100, 100));
+      MotorLeftDown.  Speed(StickLeftY);
     }  
 
     Serial.print(" " + String(MotorRightUp.Speed()));
