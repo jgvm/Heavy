@@ -37,6 +37,10 @@ const int range = 20;
 #define StickRightRight    ((Ps3.data.analog.stick.rx > 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
 #define StickRightLeft     ((Ps3.data.analog.stick.rx < 0) && (Ps3.data.analog.stick.ry > -range && Ps3.data.analog.stick.ry < range ))
 
+#define StickLeftXY        (abs(Ps3.data.analog.stick.lx) > abs(Ps3.data.analog.stick.ly))
+#define StickLeftYX        (abs(Ps3.data.analog.stick.ly) > abs(Ps3.data.analog.stick.lx))
+#define StickLeftXeY       (abs(Ps3.data.analog.stick.ly)== abs(Ps3.data.analog.stick.lx))
+
 
 void notify(){
   //---------------- Analog stick value events ---------------
@@ -114,35 +118,54 @@ void notify(){
     Serial.print("Moved the left stick:");
     Serial.print(" x="); Serial.print(Ps3.data.analog.stick.lx, DEC);
     Serial.print(" y="); Serial.print(Ps3.data.analog.stick.ly, DEC);
-    // Forward and Backward
+    // Forward and Backward (⇅)
     if(StickLeftForward || StickLeftBackward){
       Serial.print(" Forward or Backward");
-      MotorRightUp.   Speed(StickLeftY);
-      MotorRightDown. Speed(StickLeftY);
-      MotorLeftUp.    Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftY);
-    } // Side by side
+      MotorLeftUp.    Speed(StickLeftY); MotorRightUp.   Speed(StickLeftY);
+      MotorLeftDown.  Speed(StickLeftY); MotorRightDown. Speed(StickLeftY);
+    } 
+    // Side by side (⇄)
     else if(StickLeftRight || StickLeftLeft){
       Serial.print(" Right or Left");
-      MotorRightUp.   Speed(-StickLeftX);
-      MotorRightDown. Speed(StickLeftX);
-      MotorLeftUp.    Speed(StickLeftX);
-      MotorLeftDown.  Speed(-StickLeftX);
+      MotorLeftUp.    Speed(StickLeftX);  MotorRightUp.   Speed(-StickLeftX);
+      MotorLeftDown.  Speed(-StickLeftX); MotorRightDown. Speed(StickLeftX);
     } 
-    else if(StickLeftUpRight || StickLeftDownLeft){
+    //Derecha arriba Y Mayor (⦯ ⦬)
+    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftYX){
       Serial.print(" Up Right or Down Left");
-      MotorRightUp.   Speed(0);
-      MotorRightDown. Speed(StickLeftX);
-      MotorLeftUp.    Speed(StickLeftY);
-      MotorLeftDown.  Speed(0);
-    } // abajo derecha 
-    else if(StickLeftDownRight || StickLeftUpLeft){
+      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
+      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftY);
+    } 
+    //Derecha arriba XY (🡥)
+    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXeY){
+      Serial.print(" Up Right or Down Left");
+      MotorLeftUp.    Speed(StickLeftY);  MotorRightUp.   Speed(0);
+      MotorLeftDown.  Speed(0);           MotorRightDown. Speed(StickLeftX);
+    } 
+    //Derecha arriba X Mayor ( ⦫ ⦨)
+    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXY){
+      Serial.print(" Up Right or Down Left");
+      MotorLeftUp.    Speed(StickLeftX);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
+      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftX);
+    } 
+    //Derecha abajo X Mayor(⦩⦪)
+    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXY){
       Serial.print(" Down Right or Up Left");
-      MotorRightUp.   Speed(-StickLeftX);
-      MotorRightDown. Speed(0);
-      MotorLeftUp.    Speed(0);
-      MotorLeftDown.  Speed(StickLeftY);
+      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(-StickLeftX);
+      MotorLeftDown.  Speed(-StickLeftX);           MotorRightDown. Speed(StickLeftX+StickLeftY);
+    } 
+    //Derecha abajo XY (🡦)
+    else if(StickLeftDownRight && StickLeftXeY){
+      Serial.print(" Down Right or Up Left");
+      MotorLeftUp.    Speed(0);           MotorRightUp.   Speed(-StickLeftX);
+      MotorLeftDown.  Speed(StickLeftY);  MotorRightDown. Speed(0);
     }  
+    //Derecha abajo Y Mayor (⦭⦮)
+    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftYX){
+      Serial.print(" Down Right or Up Left");
+      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(StickLeftY);
+      MotorLeftDown.  Speed(StickLeftY);           MotorRightDown. Speed(StickLeftX+StickLeftY);
+    } 
 
     Serial.print(" " + String(MotorRightUp.Speed()));
     Serial.print(" " + String(MotorRightDown.Speed()));
