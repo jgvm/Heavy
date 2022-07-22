@@ -31,7 +31,7 @@ void Motor::begin(){
 }
 
 void Motor::Speed(int8_t speed){
-    _speed = speed;
+    _speed = abs(speed)>100?0:speed;
     digitalWrite(_pin_EN, LOW);
     if(_speed == 0) {
         _direction = Stoped;
@@ -52,23 +52,18 @@ void Motor::Speed(int8_t speed){
 };
 
 void Motor::Speed(int8_t speed, motorDirection forceDirection){
-    _speed = abs(speed);
     _direction = forceDirection;
     digitalWrite(_pin_EN, LOW);
-    if(forceDirection == Forward) {
-        analogWrite(_pin_IN1, abs(map(_speed,0,100,0,255)), 255);
-        analogWrite(_pin_IN2, 0, 255);
+    if(_direction == Forward) {
+        Speed(abs(speed));
     }
-    else if(forceDirection == Backward) {
-        analogWrite(_pin_IN1, 0, 255);
-        analogWrite(_pin_IN2, abs(map(_speed,0,100,0,255)), 255);
+    else if(_direction == Backward) {
+        Speed(-abs(speed));
     }
     else{
-        analogWrite(_pin_IN1, 0, 255);
-        analogWrite(_pin_IN2, 0, 255);
+        Speed(0);
     }
     digitalWrite(_pin_EN, HIGH);
-
 };
 
 int8_t Motor::Speed(){
@@ -76,13 +71,5 @@ int8_t Motor::Speed(){
 };
 
 motorDirection Motor::Direction(){
-    if(_speed == 0) {
-        return Stoped;
-    }
-    else if(_speed > 0) {
-        return Forward;
-    }
-    else if(_speed < 0) {
-        return Backward;
-    }
+    return _direction;
 };

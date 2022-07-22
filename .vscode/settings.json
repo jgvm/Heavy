@@ -1,6 +1,18 @@
 {
     "files.associations": {
         "ps3.h": "c",
-        "esp_system.h": "c"
+        "esp_system.h": "c",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "functional": "cpp",
+        "iomanip": "cpp",
+        "istream": "cpp",
+        "limits": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp"
     }
 }
