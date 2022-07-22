@@ -19,6 +19,9 @@ const int range = 20;
 #define StickLeftY        map(Ps3_data_analog_stick_ly,-128,128,-100,100)
 #define StickLeftX        map(Ps3_data_analog_stick_ly,-128,128,-100,100)
 
+#define StickLeftYa        map(abs(Ps3_data_analog_stick_ly),0,128,0,100)
+#define StickLeftXa        map(abs(Ps3_data_analog_stick_ly),0,128,0,100)
+
 // Values Right Stick
 #define Ps3_data_analog_stick_ry (-Ps3.data.analog.stick.ry)
 #define Ps3_data_analog_stick_rx (Ps3.data.analog.stick.rx)
@@ -26,9 +29,8 @@ const int range = 20;
 #define StickRightY       map(Ps3_data_analog_stick_ry,-128,128,-100,100)
 #define StickRightX       map(Ps3_data_analog_stick_rx,-128,128,-100,100)
 
-#define StickRightX_fLx   map(Ps3_data_analog_stick_rx,-128,128,-abs(StickLeftX),abs(StickLeftX))
-#define StickRightX_fLy   map(Ps3_data_analog_stick_rx,-128,128,-abs(StickLeftY),abs(StickLeftY))
-
+#define StickRightX_fLx   map(abs(Ps3_data_analog_stick_rx),0,128,0,StickLeftX)
+#define StickRightX_fLy   map(abs(Ps3_data_analog_stick_rx),0,128,0,StickLeftY)
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
 #define StickLeftUp         (Ps3_data_analog_stick_ly>=range)
@@ -95,40 +97,48 @@ void notify(){
   if(StickLeftActive && StickRightActive && (StickLeftAction || StickRightAction)){
     StickLeftAction = false;
     StickRightAction = false;
+    // Up -- Right
     if(StickLeftUp && StickRightRight){
-      MotorLeftUp.    Speed(StickLeftY);                                MotorRightUp.   Speed(StickLeftY - StickRightX_fLy);
-      MotorLeftDown.  Speed(StickLeftY);                                MotorRightDown. Speed(StickLeftY - StickRightX_fLy);
-    } 
+      MotorLeftUp.    Speed(StickLeftY);                                MotorRightUp.   Speed(StickLeftYa - StickRightX_fLy);
+      MotorLeftDown.  Speed(StickLeftY);                                MotorRightDown. Speed(StickLeftYa - StickRightX_fLy);
+    }
+    // Up -- Left 
     else if(StickLeftUp && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftY + StickRightX_fLy);              MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftY + StickRightX_fLy);              MotorRightDown. Speed(StickLeftY);
+      MotorLeftUp.    Speed(StickLeftYa - StickRightX_fLy);              MotorRightUp.   Speed(StickLeftY);
+      MotorLeftDown.  Speed(StickLeftYa - StickRightX_fLy);              MotorRightDown. Speed(StickLeftY);
     } 
+    // Down -- Right
     else if(StickLeftDown && StickRightRight){
-      MotorLeftUp.    Speed(StickLeftY);                                MotorRightUp.   Speed(StickLeftY + StickRightX_fLy);
-      MotorLeftDown.  Speed(StickLeftY);                                MotorRightDown. Speed(StickLeftY + StickRightX_fLy);
+      MotorLeftUp.    Speed(StickLeftY);                                MotorRightUp.   Speed(-(StickLeftYa - StickRightX_fLy));
+      MotorLeftDown.  Speed(StickLeftY);                                MotorRightDown. Speed(-(StickLeftYa - StickRightX_fLy));
     } 
+    // Down -- Left
     else if(StickLeftDown && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftY - StickRightX_fLy);              MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftY - StickRightX_fLy);              MotorRightDown. Speed(StickLeftY);
+      MotorLeftUp.    Speed(-(StickLeftYa - StickRightX_fLy));              MotorRightUp.   Speed(StickLeftY);
+      MotorLeftDown.  Speed(-(StickLeftYa - StickRightX_fLy));              MotorRightDown. Speed(StickLeftY);
     } 
+    // Right -- Right
     else if(StickLeftRight && StickRightRight){
       MotorLeftUp.    Speed(StickLeftX );                               MotorRightUp.   Speed(-StickLeftX );
-      MotorLeftDown.  Speed(-StickLeftX + StickRightX_fLx);             MotorRightDown. Speed(StickLeftX - StickRightX_fLx);
+      MotorLeftDown.  Speed(-(StickLeftXa - StickRightX_fLx));             MotorRightDown. Speed(StickLeftXa - StickRightX_fLx);
     }
+    // Right -- Left
     else if(StickLeftRight && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftX + StickRightX_fLx);              MotorRightUp.   Speed(-StickLeftX - StickRightX_fLx);
+      MotorLeftUp.    Speed(StickLeftXa - StickRightX_fLx);              MotorRightUp.   Speed(-(StickLeftXa - StickRightX_fLx));
       MotorLeftDown.  Speed(-StickLeftX);                               MotorRightDown. Speed(StickLeftX);
-    }
+    } 
+    // Left -- Right
     else if(StickLeftLeft && StickRightRight){
-      MotorLeftUp.    Speed(StickLeftX + StickRightX_fLx);               MotorRightUp.   Speed(-StickLeftX - StickRightX_fLx);
-      MotorLeftDown.  Speed(-StickLeftX);                                MotorRightDown. Speed(StickLeftX);
+      MotorLeftUp.    Speed(-(StickLeftXa - StickRightX_fLx));          MotorRightUp.   Speed(StickLeftXa - StickRightX_fLx);
+      MotorLeftDown.  Speed(StickLeftX);                                MotorRightDown. Speed(-StickLeftX);
     }
+    // Left -- Left
     else if(StickLeftLeft && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftX);                                 MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(-StickLeftX - StickRightX_fLx);              MotorRightDown. Speed(StickLeftX + StickRightX_fLx);
+      MotorLeftUp.    Speed(-StickLeftX);                                 MotorRightUp.   Speed(StickLeftX);
+      MotorLeftDown.  Speed(StickLeftXa - StickRightX_fLx);              MotorRightDown. Speed(-(StickLeftXa - StickRightX_fLx));
     }
     // Down Left or Up Right and Y Mayor (⦯ ⦬)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftYX){
+    else if(StickLeftUpRight && StickLeftYX){
       MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
       MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftY);
     } 
@@ -137,28 +147,28 @@ void notify(){
       MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(0);
       MotorLeftDown.  Speed(0);                     MotorRightDown. Speed(StickLeftX);
     } 
-    //Down Left or Up Right and X Mayor ( ⦫ ⦨)
+    //Down-Left or Up-Right and X Mayor ( ⦫ ⦨)
     else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXY){
       MotorLeftUp.    Speed(StickLeftX);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
       MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftX);
     } 
-    // Up Left and X Mayor(⦩⦪)
+    // Up-Left or Down-Right and X Mayor(⦩⦪)
     else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXY){
       MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(-StickLeftX);
       MotorLeftDown.  Speed(-StickLeftX);           MotorRightDown. Speed(StickLeftX+StickLeftY);
     } 
     //Derecha abajo XY (🡦)
-    else if(StickLeftDownRight && StickLeftXeY){
+    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXeY){
       MotorLeftUp.    Speed(0);                     MotorRightUp.   Speed(-StickLeftX);
       MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(0);
-    }  
+    }
     //Derecha abajo Y Mayor (⦭⦮)
     else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftYX){
       MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(StickLeftY);
       MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(StickLeftX+StickLeftY);
     } 
   }
-  
+
   //Actions when only Left stick is Active
   else if( StickLeftActive && !StickRightActive && StickLeftAction){
     StickLeftAction = false;
