@@ -95,7 +95,7 @@ void logData(bool active){
     Serial.print('mD:');
     Serial.print(MotorRightDown.PWM()*MotorRightDown.Direction());
     Serial.println();
-    Serial.println('-------------------------------------------------------------'):
+    Serial.println('-------------------------------------------------------------');
   }
 }
 
