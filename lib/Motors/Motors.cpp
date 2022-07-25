@@ -32,8 +32,8 @@ void Motor::begin(){
 
 void Motor::Speed(int8_t speed){
     _speed = abs(speed)>100?100:speed;
-    uint8_t tmpSpeed = map(abs(_speed),0,100,0,255);
-    _PWM = tmpSpeed-map(_efect,0,100,0,tmpSpeed);
+    uint8_t speed2PWM = map(abs(_speed),0,100,0,255);
+    _PWM = speed2PWM-map(_efect,0,100,0,speed2PWM);
     digitalWrite(_pin_EN, LOW);
     if(_speed == 0) {
         _direction = Stoped;
@@ -79,6 +79,9 @@ void Motor::Efect(int8_t efect){
 
 int8_t Motor::Efect(){
     return _efect;
+};
+int8_t Motor::PWM(){
+    return _PWM;
 };
 
 motorDirection Motor::Direction(){

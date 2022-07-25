@@ -30,9 +30,9 @@ enum motorWires {
   routeB
 };
 enum motorDirection {
-  Forward,
-  Backward,
-  Stoped
+  Forward=-1,
+  Stoped=0,
+  Backward=1
 };
 
 class Motor{
@@ -45,6 +45,7 @@ class Motor{
     int8_t Speed();
     void Efect(int8_t efect);
     int8_t Efect();
+    int8_t PWM();
     motorDirection Direction();
 
   private:

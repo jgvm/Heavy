@@ -65,25 +65,38 @@ const int range = 20;
 #define StickRight_on_DownRight  ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a<0))         //⦮|⦪
 #define StickRight_on_UpLeft     ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))         //⦩|⦭
 
-void logData(){
-  Serial.println('-------------------------------------------------------------'):
-  Serial.print(Ps3_data_analog_stick_lx):
-  Serial.print('\t\t\t'):
-  Serial.print(Ps3_data_analog_stick_ly):
-  Serial.println():
-  Serial.print(Ps3_data_analog_stick_rx):
-  Serial.print('\t\t\t'):
-  Serial.print(Ps3_data_analog_stick_ry):
-  Serial.println():
-  Serial.print(MotorLeftUp.Speed()):
-  Serial.print('\t\t\t'):
-  Serial.print(MotorRightUp.Speed()):
-  Serial.println():
-  Serial.print(MotorLeftDown.Speed()):
-  Serial.print('\t\t\t'):
-  Serial.print(MotorRightDown.Speed()):
-  Serial.println():
-  Serial.println('-------------------------------------------------------------'):
+#define Show true
+
+void logData(bool active){
+  if(active){
+    Serial.println('-------------------------------------------------------------');
+    Serial.println('\t\t\tLeft Stick');
+    Serial.print('Lx:');
+    Serial.print(Ps3_data_analog_stick_lx);
+    Serial.print('\t\t\t');
+    Serial.print('Ly:');
+    Serial.print(Ps3_data_analog_stick_ly);
+    Serial.println();
+    Serial.print('Rx:');
+    Serial.print(Ps3_data_analog_stick_rx);
+    Serial.print('\t\t\t');
+    Serial.print('Ry:');
+    Serial.print(Ps3_data_analog_stick_ry);
+    Serial.println();
+    Serial.print('mA:');
+    Serial.print(MotorLeftUp.PWM()*MotorLeftUp.Direction());
+    Serial.print('\t\t\t');
+    Serial.print('mB:');
+    Serial.print(MotorRightUp.PWM()*MotorRightUp.Direction());
+    Serial.println();
+    Serial.print('mC:');
+    Serial.print(MotorLeftDown.PWM()*MotorLeftDown.Direction());
+    Serial.print('\t\t\t');
+    Serial.print('mD:');
+    Serial.print(MotorRightDown.PWM()*MotorRightDown.Direction());
+    Serial.println();
+    Serial.println('-------------------------------------------------------------'):
+  }
 }
 
 void notify(){
@@ -110,7 +123,7 @@ void notify(){
       MotorLeftUp.Speed(StickLeft_norm_X+StickLeft_norm_Y);         MotorRightUp.Speed(StickLeft_norm_ABS);
       MotorLeftDown.Speed(StickLeft_norm_ABS);                      MotorRightDown.Speed(StickLeft_norm_X+StickLeft_norm_Y);
     }
-    logData();
+    logData(Show);
   }
 
   //Event right stick 
@@ -167,28 +180,7 @@ void notify(){
         MotorLeftDown.Efect(StickRight_norm_ABS);                      MotorRightDown.Efect(StickRight_norm_X+StickRight_norm_Y);
       }
     }
-    logData();
-  }
-
-  //---------- Analog shoulder/trigger button events ----------
-  if( abs(Ps3.event.analog_changed.button.l1)){
-    Serial.print("Pressing the left shoulder button: ");
-    Serial.println(Ps3.data.analog.button.l1, DEC);
-  }
-
-  if( abs(Ps3.event.analog_changed.button.r1) ){
-    Serial.print("Pressing the right shoulder button: ");
-    Serial.println(Ps3.data.analog.button.r1, DEC);
-  }
-
-  if( abs(Ps3.event.analog_changed.button.l2) ){
-    Serial.print("Pressing the left trigger button: ");
-    Serial.println(Ps3.data.analog.button.l2, DEC);
-  }
-
-  if( abs(Ps3.event.analog_changed.button.r2) ){
-    Serial.print("Pressing the right trigger button: ");
-    Serial.println(Ps3.data.analog.button.r2, DEC);
+    logData(Show);
   }
 }
 
@@ -209,18 +201,12 @@ void setup()
   MotorLeftDown.begin();
   MotorLeftUp.begin();
   Serial.begin(115200);
-    
   Ps3.attach(notify);
   Ps3.attachOnConnect(onConnect);
   Ps3.attachOnDisconnect(onDisconnect);
   Ps3.begin();
-  
-
   Serial.println("Ready.");
 }
 
-void loop()
-{
-  if(!Ps3.isConnected())
-    return;
+void loop(){
 }
