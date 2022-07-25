@@ -47,7 +47,7 @@ class Motor{
     int8_t Efect();
     int8_t PWM();
     motorDirection Direction();
-
+    void count
   private:
     //Pins
     uint8_t _pin_EN;
@@ -60,7 +60,10 @@ class Motor{
     int8_t _efect;
     int8_t _PWM;
 
-
+    //encoder
+    uint8_t _faseA;
+    uint8_t _faseB;
+    uint8_t _RPM;
 
     motorDirection _direction;
 };
