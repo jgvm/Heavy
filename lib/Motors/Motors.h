@@ -43,6 +43,8 @@ class Motor{
     void Speed(int8_t speed);
     void Speed(int8_t speed, motorDirection forceDirection);
     int8_t Speed();
+    void Efect(int8_t efect);
+    int8_t Efect();
     motorDirection Direction();
 
   private:
@@ -54,8 +56,11 @@ class Motor{
 
     //Values
     int8_t _speed;
+    int8_t _efect;
+    int8_t _PWM;
+
+
+
     motorDirection _direction;
-
-
 };
 #endif

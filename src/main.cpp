@@ -14,282 +14,117 @@ int battery = 0;
 const int range = 20;
 
 // Values Left Stick
-#define Ps3_data_analog_stick_ly (-Ps3.data.analog.stick.ly)
 #define Ps3_data_analog_stick_lx (Ps3.data.analog.stick.lx)
+#define Ps3_data_analog_stick_ly (-Ps3.data.analog.stick.ly)
 
-#define StickLeftY        map(Ps3_data_analog_stick_ly,-128,128,-100,100)
-#define StickLeftX        map(Ps3_data_analog_stick_lx,-128,128,-100,100)
+#define Ps3_data_analog_stick_lx_a abs(Ps3.data.analog.stick.lx)
+#define Ps3_data_analog_stick_ly_a abs(Ps3.data.analog.stick.ly)
 
-#define StickLeftYa        map(abs(Ps3_data_analog_stick_ly),0,128,0,100)
-#define StickLeftXa        map(abs(Ps3_data_analog_stick_lx),0,128,0,100)
+#define StickLeft_norm_X        map(Ps3_data_analog_stick_lx,-128,128,-100,100)
+#define StickLeft_norm_Y        map(Ps3_data_analog_stick_ly,-128,128,-100,100)
 
-// Values Right Stick
-#define Ps3_data_analog_stick_ry (-Ps3.data.analog.stick.ry)
-#define Ps3_data_analog_stick_rx (Ps3.data.analog.stick.rx)
+#define StickLeft_norm_Xa        map(abs(Ps3_data_analog_stick_lx),0,128,0,100)
+#define StickLeft_norm_Ya        map(abs(Ps3_data_analog_stick_ly),0,128,0,100)
 
-#define StickRightY       map(Ps3_data_analog_stick_ry,-128,128,-100,100)
-#define StickRightX       map(Ps3_data_analog_stick_rx,-128,128,-100,100)
-
-#define StickRightX_fLx   map(abs(Ps3_data_analog_stick_rx),0,128,0,StickLeftX)
-#define StickRightX_fLy   map(abs(Ps3_data_analog_stick_rx),0,128,0,StickLeftY)
+#define StickLeft_norm_ABS  ((Ps3_data_analog_stick_lx_a>Ps3_data_analog_stick_ly_a)?StickLeft_norm_X:((Ps3_data_analog_stick_lx_a<Ps3_data_analog_stick_ly_a)?StickLeft_norm_Y:((StickLeft_norm_X/StickLeft_norm_Y)*StickLeft_norm_X)))
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
-#define StickLeftUp         (Ps3_data_analog_stick_ly>=range)
-#define StickLeftDown       (Ps3_data_analog_stick_ly<=-range)
-#define StickLeftLeft       (Ps3_data_analog_stick_lx<=-range)
-#define StickLeftRight      (Ps3_data_analog_stick_lx>=range)
-#define StickLeftCenter     ((!StickLeftUp)&&(!StickLeftDown)&&(!StickLeftRight)&&(!StickLeftLeft))
+#define StickLeft_on_Center     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a<range))
+#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range)) 
+#define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a!=0))
+#define StickLeft_on_UpRight    ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a>0))
+#define StickLeft_on_DownLeft   ((Ps3_data_analog_stick_lx_a<0)&&(Ps3_data_analog_stick_ly_a>0))
+#define StickLeft_on_DownRight  ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a<0))
+#define StickLeft_on_UpLeft     ((Ps3_data_analog_stick_lx_a<0)&&(Ps3_data_analog_stick_ly_a>0))
 
-#define StickLeftUpLeft     ((StickLeftUp)&&(StickLeftLeft))
-#define StickLeftUpRight    ((StickLeftUp)&&(StickLeftRight))
-#define StickLeftDownRight  ((StickLeftDown)&&(StickLeftRight))
-#define StickLeftDownLeft   ((StickLeftDown)&&(StickLeftLeft))
+// Values Right Stick
+#define Ps3_data_analog_stick_rx (Ps3.data.analog.stick.rx)
+#define Ps3_data_analog_stick_ry (-Ps3.data.analog.stick.ry)
 
-#define StickLeftXY         (abs(Ps3_data_analog_stick_lx)>abs(Ps3_data_analog_stick_ly))
-#define StickLeftYX         (abs(Ps3_data_analog_stick_lx)<abs(Ps3_data_analog_stick_ly))
-#define StickLeftXeY        (abs(Ps3_data_analog_stick_lx)==abs(Ps3_data_analog_stick_ly))
-bool StickLeftAction = false;
-bool StickLeftActive = false;
+#define Ps3_data_analog_stick_rx_a abs(Ps3.data.analog.stick.rx)
+#define Ps3_data_analog_stick_ry_a abs(Ps3.data.analog.stick.ry)
+
+#define StickRight_norm_X        map(Ps3_data_analog_stick_rx,-128,128,-100,100)
+#define StickRight_norm_Y        map(Ps3_data_analog_stick_ry,-128,128,-100,100)
+
+#define StickRight_norm_Xa        map(abs(Ps3_data_analog_stick_rx),0,128,0,100)
+#define StickRight_norm_Ya        map(abs(Ps3_data_analog_stick_ry),0,128,0,100)
+
+#define StickRight_norm_ABS  ((Ps3_data_analog_stick_rx_a>Ps3_data_analog_stick_ry_a)?StickRight_norm_X:((Ps3_data_analog_stick_rx_a<Ps3_data_analog_stick_ry_a)?StickRight_norm_Y:((StickRight_norm_X/StickRight_norm_Y)*StickRight_norm_X)))
 
 // Ranges Right Stick -- Forward, Backward, Right, Left
-#define StickRightUp         (Ps3_data_analog_stick_ry>=range)
-#define StickRightDown       (Ps3_data_analog_stick_ry<=-range)
-#define StickRightLeft       (Ps3_data_analog_stick_rx<=-range)
-#define StickRightRight      (Ps3_data_analog_stick_rx>=range)
-#define StickRightCenter     ((!StickRightUp)&&(!StickRightDown)&&(!StickRightRight)&&(!StickRightLeft))
-
-#define StickRightUpLeft     ((StickRightUp)&&(StickRightLeft))
-#define StickRightUpRight    ((StickRightUp)&&(StickRightRight))
-#define StickRightDownRight  ((StickRightDown)&&(StickRightRight))
-#define StickRightDownLeft   ((StickRightDown)&&(StickRightLeft))
-
-#define StickRightXY         (abs(Ps3_data_analog_stick_rx)>abs(Ps3_data_analog_stick_ry))
-#define StickRightYX         (abs(Ps3_data_analog_stick_rx)<abs(Ps3_data_analog_stick_ry))
-#define StickRightXeY        (abs(Ps3_data_analog_stick_rx)==abs(Ps3_data_analog_stick_ry))
-
-bool StickRightActive = false;
-bool StickRightAction = false;
+#define StickRight_on_Center     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a<range))
+#define StickRight_on_LeftRight  ((Ps3_data_analog_stick_rx_a!=0)&&(Ps3_data_analog_stick_ry_a<range)) 
+#define StickRight_on_Right        ((Ps3_data_analog_stick_rx>0)&&(Ps3_data_analog_stick_ry_a<range)) 
+#define StickRight_on_Left         ((Ps3_data_analog_stick_rx<0)&&(Ps3_data_analog_stick_ry_a<range)) 
+#define StickRight_on_UpDown     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a!=0))
+#define StickRight_on_Up           ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry>0))
+#define StickRight_on_Down         ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry<0))
+#define StickRight_on_UpRight    ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a>0))
+#define StickRight_on_DownLeft   ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))
+#define StickRight_on_DownRight  ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a<0))
+#define StickRight_on_UpLeft     ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))
 
 void notify(){
   //---------------- Analog stick value events ---------------
   //Event Left stick 
   if( (abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2)){
-    StickLeftAction = true;
-    if(!StickLeftCenter) {StickLeftActive = true;}
-    else {
-      StickLeftActive = false;
+    if(StickLeft_on_Center){
+      MotorLeftUp.Speed(0);         MotorRightUp.Speed(0);
+      MotorLeftDown.Speed(0);       MotorRightDown.Speed(0);
+    }
+    else if(StickLeft_on_LeftRight){
+      MotorLeftUp.Speed(StickLeft_norm_Xa);         MotorRightUp.Speed(-StickLeft_norm_Xa);
+      MotorLeftDown.Speed(-StickLeft_norm_Xa);       MotorRightDown.Speed(StickLeft_norm_Xa);
+    }
+    else if(StickLeft_on_UpDown){
+      MotorLeftUp.Speed(StickLeft_norm_Y);         MotorRightUp.Speed(StickLeft_norm_Y);
+      MotorLeftDown.Speed(StickLeft_norm_Y);       MotorRightDown.Speed(StickLeft_norm_Y);
+    }
+    else if(StickLeft_on_UpRight || StickLeft_on_DownLeft){
+      MotorLeftUp.Speed(StickLeft_norm_ABS);                        MotorRightUp.Speed(StickLeft_norm_Y-StickLeft_norm_X);
+      MotorLeftDown.Speed(StickLeft_norm_Y-StickLeft_norm_X);       MotorRightDown.Speed(StickLeft_norm_ABS);
+    }
+    else if(StickLeft_on_UpLeft || StickLeft_on_DownRight){
+      MotorLeftUp.Speed(StickLeft_norm_X+StickLeft_norm_Y);         MotorRightUp.Speed(StickLeft_norm_ABS);
+      MotorLeftDown.Speed(StickLeft_norm_ABS);                      MotorRightDown.Speed(StickLeft_norm_X+StickLeft_norm_Y);
     }
   }
 
   //Event right stick 
   if((abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2)){
-    StickRightAction = true;
-    if(!StickRightCenter) {StickRightActive = true;} 
-    else {
-      StickRightActive = false;
+    if(StickRight_on_Center){
+      MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
+      MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
+      if(StickLeft_on_Center){
+        MotorLeftUp.Speed(0);         MotorRightUp.Speed(0);
+        MotorLeftDown.Speed(0);       MotorRightDown.Speed(0);
+      }
+    }
+    else if(StickRight_on_Right){
+      if(StickLeft_on_Center){
+        MotorLeftUp.Speed(StickRight_norm_X);         MotorRightUp.Speed(-StickRight_norm_X);
+        MotorLeftDown.Speed(StickRight_norm_X);       MotorRightDown.Speed(-StickRight_norm_X);
+      }
+      else if(StickLeft_on_UpDown){
+        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(StickRight_norm_X);
+        MotorLeftDown.Efect(StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_Y);
+      }
+      else if(StickLeft_on_LeftRight){
+        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(-StickRight_norm_Xa);
+        MotorLeftDown.Efect(-StickRight_norm_Xa);       MotorRightDown.Efect(StickRight_norm_Xa);
+      }
+      else if(StickLeft_on_UpRight || StickLeft_on_DownLeft){
+        MotorLeftUp.Efect(StickRight_norm_ABS);                        MotorRightUp.Efect(StickRight_norm_Y-StickRight_norm_X);
+        MotorLeftDown.Efect(StickRight_norm_Y-StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_ABS);
+      }
+      else if(StickLeft_on_UpLeft || StickLeft_on_DownRight){
+        MotorLeftUp.Efect(StickRight_norm_X+StickRight_norm_Y);         MotorRightUp.Efect(StickRight_norm_ABS);
+        MotorLeftDown.Efect(StickRight_norm_ABS);                      MotorRightDown.Efect(StickRight_norm_X+StickRight_norm_Y);
+      }
     }
   }
 
-  //Event booth Sticks
-  if(StickLeftActive && StickRightActive && (StickLeftAction || StickRightAction)){
-    Serial.print("Booth Sticks\t\t");
-    Serial.print("\t" + String(StickLeftY));
-    Serial.print("\t" + String(StickLeftX));
-    Serial.print("\t" + String(StickRightY));
-    Serial.println("\t" + String(StickRightX));
-
-    StickLeftAction = false;
-    StickRightAction = false;
-    // Up -- Right
-    if((StickLeftUp && !StickLeftLeft && !StickLeftRight) && StickRightRight){
-      MotorLeftUp.    Speed(StickLeftY);                                MotorRightUp.   Speed(StickLeftYa - StickRightX_fLy);
-      MotorLeftDown.  Speed(StickLeftY);                                MotorRightDown. Speed(StickLeftYa - StickRightX_fLy);
-    }
-    // Up -- Left 
-    else if((StickLeftUp && !StickLeftLeft && !StickLeftRight) && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftYa - StickRightX_fLy);              MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftYa - StickRightX_fLy);              MotorRightDown. Speed(StickLeftY);
-    } 
-    // Down -- Right
-    else if((StickLeftDown && !StickLeftLeft && !StickLeftRight) && StickRightRight){
-      MotorLeftUp.    Speed(-StickLeftY);                                MotorRightUp.   Speed(-int(StickLeftYa - StickRightX_fLy));
-      MotorLeftDown.  Speed(-StickLeftY);                                MotorRightDown. Speed(-int(StickLeftYa - StickRightX_fLy));
-    } 
-    // Down -- Left
-    else if((StickLeftDown && !StickLeftLeft && !StickLeftRight) && StickRightLeft){
-      MotorLeftUp.    Speed(-int(StickLeftYa - StickRightX_fLy));              MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(-int(StickLeftYa - StickRightX_fLy));              MotorRightDown. Speed(StickLeftY);
-    } 
-    // Right -- Right
-    else if((StickLeftRight && !StickLeftUp && !StickLeftDown) && StickRightRight){
-      MotorLeftUp.    Speed(StickLeftX );                               MotorRightUp.   Speed(-StickLeftX );
-      MotorLeftDown.  Speed(-int(StickLeftXa - StickRightX_fLx));             MotorRightDown. Speed(StickLeftXa - StickRightX_fLx);
-    }
-    // Right -- Left
-    else if((StickLeftRight && !StickLeftUp && !StickLeftDown) && StickRightLeft){
-      MotorLeftUp.    Speed(StickLeftXa - StickRightX_fLx);              MotorRightUp.   Speed(-int(StickLeftXa - StickRightX_fLx));
-      MotorLeftDown.  Speed(-StickLeftXa);                               MotorRightDown. Speed(StickLeftXa);
-    } 
-    // Left -- Right
-    else if((StickLeftLeft && !StickLeftUp && !StickLeftDown) && StickRightRight){
-      MotorLeftUp.    Speed(-int(StickLeftXa - StickRightX_fLx));          MotorRightUp.   Speed(StickLeftXa - StickRightX_fLx);
-      MotorLeftDown.  Speed(StickLeftXa);                                MotorRightDown. Speed(-StickLeftXa);
-    }
-    // Left -- Left
-    else if((StickLeftLeft && !StickLeftUp && !StickLeftDown) && StickRightLeft){
-      MotorLeftUp.    Speed(-StickLeftX);                                 MotorRightUp.   Speed(StickLeftX);
-      MotorLeftDown.  Speed(StickLeftXa - StickRightX_fLx);              MotorRightDown. Speed(-int(StickLeftXa - StickRightX_fLx));
-    }
-    // Down Left or Up Right and Y Mayor (⦯ ⦬)
-    else if(StickLeftUpRight && StickLeftYX){
-      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftY);
-    } 
-    //Derecha arriba XY (🡥)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXeY){
-      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(0);
-      MotorLeftDown.  Speed(0);                     MotorRightDown. Speed(StickLeftX);
-    } 
-    //Down-Left or Up-Right and X Mayor ( ⦫ ⦨)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXY){
-      MotorLeftUp.    Speed(StickLeftX);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftX);
-    } 
-    // Up-Left or Down-Right and X Mayor(⦩⦪)
-    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXY){
-      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(-StickLeftX);           MotorRightDown. Speed(StickLeftX+StickLeftY);
-    } 
-    //Derecha abajo XY (🡦)
-    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXeY){
-      MotorLeftUp.    Speed(0);                     MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(0);
-    }
-    //Derecha abajo Y Mayor (⦭⦮)
-    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftYX){
-      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(StickLeftX+StickLeftY);
-    }
-    else if(StickRightCenter && StickLeftCenter){
-      MotorLeftUp.    Speed(0);   MotorRightUp.   Speed(0);
-      MotorLeftDown.  Speed(0);   MotorRightDown. Speed(0);
-    } 
-  }
-  else if(!StickLeftActive && !StickRightActive && (StickLeftAction || StickRightAction)){
-    //Centro ()
-    Serial.println("Center\t\t");
-    Serial.print("\t" + String(StickLeftY));
-    Serial.print("\t" + String(StickLeftX));
-    Serial.print("\t" + String(StickRightY));
-    Serial.println("\t" + String(StickRightX));
-    StickLeftAction = false;
-    StickRightAction = false;
-    MotorLeftUp.    Speed(0);   MotorRightUp.   Speed(0);
-    MotorLeftDown.  Speed(0);   MotorRightDown. Speed(0);
-  }
-
-  //Actions when only Left stick is Active
-  else if( StickLeftActive && !StickRightActive && StickLeftAction){
-    Serial.println("Left Stick\t\t");
-    Serial.print("\t" + String(StickLeftY));
-    Serial.print("\t" + String(StickLeftX));
-    Serial.print("\t" + String(StickRightY));
-    Serial.println("\t" + String(StickRightX));
-
-    StickLeftAction = false;
-    // Forward and Backward (⇅)
-    if((StickLeftUp && !StickLeftLeft && !StickLeftRight) || (StickLeftDown && !StickLeftLeft && !StickLeftRight)){
-      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(StickLeftY);
-      MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(StickLeftY);
-    } 
-    // Side by side (⇄)
-    else if((StickLeftRight && !StickLeftUp && !StickLeftDown) || (StickLeftLeft && !StickLeftUp && !StickLeftDown)){
-      MotorLeftUp.    Speed(StickLeftX);            MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(-StickLeftX);           MotorRightDown. Speed(StickLeftX);
-    } 
-    //Derecha arriba Y Mayor (⦯ ⦬)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftYX){
-      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftY);
-    } 
-    //Derecha arriba XY (🡥)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXeY){
-      MotorLeftUp.    Speed(StickLeftY);            MotorRightUp.   Speed(0);
-      MotorLeftDown.  Speed(0);                     MotorRightDown. Speed(StickLeftX);
-    } 
-    //Derecha arriba X Mayor ( ⦫ ⦨)
-    else if(( StickLeftDownLeft||StickLeftUpRight ) && StickLeftXY){
-      MotorLeftUp.    Speed(StickLeftX);            MotorRightUp.   Speed(StickLeftY-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY-StickLeftX); MotorRightDown. Speed(StickLeftX);
-    } 
-    //Derecha abajo X Mayor(⦩⦪)
-    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftXY){
-      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(-StickLeftX);           MotorRightDown. Speed(StickLeftX+StickLeftY);
-    } 
-    //Derecha abajo XY (🡦)
-    else if(StickLeftDownRight && StickLeftXeY){
-      MotorLeftUp.    Speed(0);                     MotorRightUp.   Speed(-StickLeftX);
-      MotorLeftDown.  Speed(StickLeftY);            MotorRightDown. Speed(0);
-    }  
-    //Derecha abajo Y Mayor (⦭⦮)
-    else if(( StickLeftUpLeft||StickLeftDownRight ) && StickLeftYX){
-      MotorLeftUp.    Speed(StickLeftX+StickLeftY); MotorRightUp.   Speed(-StickLeftY);
-      MotorLeftDown.  Speed(-StickLeftY);            MotorRightDown. Speed(StickLeftX+StickLeftY);
-    } 
-    //Centro ()
-    else if(StickRightCenter){
-      MotorLeftUp.    Speed(0);   MotorRightUp.   Speed(0);
-      MotorLeftDown.  Speed(0);   MotorRightDown. Speed(0);
-    } 
-  }
-
-  //Event right stick 
-  else if(!StickLeftActive && StickRightActive && StickRightAction){
-    Serial.println("Right Stick\t\t");
-    Serial.print("\t" + String(StickLeftY));
-    Serial.print("\t" + String(StickLeftX));
-    Serial.print("\t" + String(StickRightY));
-    Serial.println("\t" + String(StickRightX));
-
-    StickRightAction = false;
-    // rotacion derecha
-    if(StickRightRight){
-      MotorRightUp.Speed(StickRightX, Forward);
-      MotorRightDown.Speed(StickRightX, Forward);
-      MotorLeftUp.Speed(StickRightX, Backward);
-      MotorLeftDown.Speed(StickRightX, Backward);
-    }// rotacion isquierda
-    else if(StickRightLeft){
-      MotorRightUp.Speed(StickRightX, Backward);
-      MotorRightDown.Speed(StickRightX, Backward);
-      MotorLeftUp.Speed(StickRightX, Forward);
-      MotorLeftDown.Speed(StickRightX, Forward);
-    } 
-    else if(StickRightCenter){
-      MotorRightUp.Speed(0);
-      MotorRightDown.Speed(0);
-      MotorLeftUp.Speed(0);
-      MotorLeftDown.Speed(0);
-    } 
-  }
-  
-/*   else if(!StickLeftActive && !StickRightActive && !StickLeftAction && !StickRightAction && StickRightCenterAction && StickLeftCenterAction){
-    Serial.print('\t');Serial.print(Ps3_data_analog_stick_lx, DEC);
-    Serial.print('\t');Serial.print(Ps3_data_analog_stick_ly, DEC);
-    Serial.print('\t');Serial.print(Ps3_data_analog_stick_rx, DEC);
-    Serial.print('\t');Serial.print(Ps3_data_analog_stick_ry, DEC);
-    Serial.print('\t' + String(StickLeftActive));
-    Serial.print('\t' + String(StickRightActive));
-    Serial.print('\t' + String(StickLeftAction));
-    Serial.print('\t' + String(StickRightAction));
-    Serial.print('\t' + String(StickLeftUp));
-    Serial.print('\t' + String(StickLeftRight));
-    Serial.print('\t' + String(StickLeftDown));
-    Serial.print('\t' + String(StickLeftLeft));
-    Serial.println();
-  }
- */
   //---------- Analog shoulder/trigger button events ----------
   if( abs(Ps3.event.analog_changed.button.l1)){
     Serial.print("Pressing the left shoulder button: ");

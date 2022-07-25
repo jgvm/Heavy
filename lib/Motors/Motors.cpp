@@ -31,7 +31,9 @@ void Motor::begin(){
 }
 
 void Motor::Speed(int8_t speed){
-    _speed = abs(speed)>100?0:speed;
+    _speed = abs(speed)>100?100:speed;
+    uint8_t tmpSpeed = map(abs(_speed),0,100,0,255);
+    _PWM = tmpSpeed-map(_efect,0,100,0,tmpSpeed);
     digitalWrite(_pin_EN, LOW);
     if(_speed == 0) {
         _direction = Stoped;
@@ -40,25 +42,25 @@ void Motor::Speed(int8_t speed){
     }
     else if(_speed > 0) {
         _direction = Forward;
-        analogWrite(_pin_IN1, abs(map(_speed,0,100,0,255)), 255);
+        analogWrite(_pin_IN1, _PWM, 255);
         analogWrite(_pin_IN2, 0, 255);
     }
     else if(_speed < 0) {
         _direction = Backward;
         analogWrite(_pin_IN1, 0, 255);
-        analogWrite(_pin_IN2, abs(map(_speed,0,100,0,255)), 255);
+        analogWrite(_pin_IN2, _PWM, 255);
     }
     digitalWrite(_pin_EN, HIGH);
 };
 
 void Motor::Speed(int8_t speed, motorDirection forceDirection){
+    _speed = speed;
     _direction = forceDirection;
-    digitalWrite(_pin_EN, LOW);
     if(_direction == Forward) {
-        Speed(abs(speed));
+        Speed(abs(_speed));
     }
     else if(_direction == Backward) {
-        Speed(-abs(speed));
+        Speed(-abs(_speed));
     }
     else{
         Speed(0);
@@ -68,6 +70,15 @@ void Motor::Speed(int8_t speed, motorDirection forceDirection){
 
 int8_t Motor::Speed(){
     return _speed;
+};
+
+void Motor::Efect(int8_t efect){
+    _efect = efect;
+    Speed(_speed);
+};
+
+int8_t Motor::Efect(){
+    return _efect;
 };
 
 motorDirection Motor::Direction(){
