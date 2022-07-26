@@ -59,7 +59,14 @@ class Motor{
     int _speed;
     int _efect;
     int _PWM;
-
     motorDirection _direction;
+    
+    //Encoder
+    long _pulses;
+    int _rpm;
+    uint8_t _pin_phaseA;
+    uint8_t _pin_phaseB;
+    void _atachEncoder( isr);
+    void _readEncoder();
 };
 #endif

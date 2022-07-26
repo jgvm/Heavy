@@ -88,3 +88,7 @@ int Motor::PWM(){
 motorDirection Motor::Direction(){
     return _direction;
 };
+
+void Motor::_atachEncoder(isr){
+    attachInterrupt(digitalPinToInterrupt(_pin_phaseA), isr,RISING)
+};
