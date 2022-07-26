@@ -132,50 +132,50 @@ void notify(){
 
   //Event right stick 
   if((abs(Ps3.event.analog_changed.stick.rx) + abs(Ps3.event.analog_changed.stick.ry) > 2)){
-    if(StickRight_on_Center){ //⌧
+    if(StickRight_on_Center){ //R⌧
       MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
       MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
-      if(StickLeft_on_Center){
+      if(StickLeft_on_Center){ //L⌧
         MotorLeftUp.Speed(0);         MotorRightUp.Speed(0);
         MotorLeftDown.Speed(0);       MotorRightDown.Speed(0);
       }
     }
-    else if(StickRight_on_Right){ //StickRight to 🡪
-      if(StickLeft_on_Center){ //StickLeft to ⌧
+    else if(StickRight_on_Right){ //R🡪
+      if(StickLeft_on_Center){ //L⌧
         MotorLeftUp.Speed(StickRight_norm_Xa);         MotorRightUp.Speed(-StickRight_norm_Xa);
         MotorLeftDown.Speed(StickRight_norm_Xa);       MotorRightDown.Speed(-StickRight_norm_Xa);
       }
-      else if(StickLeft_on_UpDown){ //StickLeft to ⇵
+      else if(StickLeft_on_UpDown){ //L⇵
         MotorLeftUp.Efect(0);         MotorRightUp.Efect(StickRight_norm_Xa);
         MotorLeftDown.Efect(0);       MotorRightDown.Efect(StickRight_norm_Xa);
       }
     }
-    else if(StickRight_on_Left){  //StickRight to 🡨
-      if(StickLeft_on_Center){ //StickLeft to ⌧
+    else if(StickRight_on_Left){  //R🡨
+      if(StickLeft_on_Center){ //L⌧
         MotorLeftUp.Speed(-StickRight_norm_Xa);         MotorRightUp.Speed(StickRight_norm_Xa);
         MotorLeftDown.Speed(-StickRight_norm_Xa);       MotorRightDown.Speed(StickRight_norm_Xa);
       }
-      else if(StickLeft_on_UpDown){ //StickLeft to ⇵
+      else if(StickLeft_on_UpDown){ //L⇵
         MotorLeftUp.Efect(StickRight_norm_Xa);         MotorRightUp.Efect(0);
         MotorLeftDown.Efect(StickRight_norm_Xa);       MotorRightDown.Efect(0);
       }
     }
-    else if(StickRight_on_Up){
-      if(StickLeft_on_Right){ //StickLeft to 🡨
+    else if(StickRight_on_Up){//R🡩
+      if(StickLeft_on_Right){ //L🡨
         MotorLeftUp.Efect(StickRight_norm_Ya);         MotorRightUp.Efect(StickRight_norm_Ya);
         MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
       }
-      else if(StickLeft_on_Left){ //StickLeft to 🡨
+      else if(StickLeft_on_Left){ //L🡨
         MotorLeftUp.Efect(StickRight_norm_Ya);         MotorRightUp.Efect(StickRight_norm_Ya);
         MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
       }
     }
-    else if(StickRight_on_Down){
-      if(StickLeft_on_Right){ //StickLeft to 🡨
+    else if(StickRight_on_Down){//R🡫
+      if(StickLeft_on_Right){ //L🡨
         MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
         MotorLeftDown.Efect(StickRight_norm_Ya);       MotorRightDown.Efect(StickRight_norm_Ya);
       }
-      else if(StickLeft_on_Left){ //StickLeft to 🡨
+      else if(StickLeft_on_Left){ //L🡨
         MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
         MotorLeftDown.Efect(StickRight_norm_Ya);       MotorRightDown.Efect(StickRight_norm_Ya);
       }
