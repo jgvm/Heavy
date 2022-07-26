@@ -30,8 +30,12 @@ const int range = 20;
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
 #define StickLeft_on_Center     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a<range)) //⌧
-#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range)) //⇆
-#define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a!=0)) //⇵
+#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range*4)) //⇆
+#define StickLeft_on_Right        ((Ps3_data_analog_stick_lx>0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡪
+#define StickLeft_on_Left         ((Ps3_data_analog_stick_lx<0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡨
+#define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly_a!=0)) //⇵
+#define StickLeft_on_Up           ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly>0)) //⇵
+#define StickLeft_on_Down         ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly<0)) //⇵
 #define StickLeft_on_UpRight    ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a>0))      //⦬|⦨
 #define StickLeft_on_DownLeft   ((Ps3_data_analog_stick_lx_a<0)&&(Ps3_data_analog_stick_ly_a>0))      //⦫|⦯
 #define StickLeft_on_DownRight  ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a<0))      //⦮|⦪
@@ -69,33 +73,33 @@ const int range = 20;
 
 void logData(bool active){
   if(active){
-    Serial.println('-------------------------------------------------------------');
-    Serial.println('\t\t\tLeft Stick');
-    Serial.print('Lx:');
+    Serial.println("-------------------------------------------------------------");
+    Serial.println("\t\t\t");
+    Serial.print("Lx:");
     Serial.print(Ps3_data_analog_stick_lx);
-    Serial.print('\t\t\t');
-    Serial.print('Ly:');
+    Serial.print("\t\t\t");
+    Serial.print("Ly:");
     Serial.print(Ps3_data_analog_stick_ly);
     Serial.println();
-    Serial.print('Rx:');
+    Serial.print("Rx:");
     Serial.print(Ps3_data_analog_stick_rx);
-    Serial.print('\t\t\t');
-    Serial.print('Ry:');
+    Serial.print("\t\t\t");
+    Serial.print("Ry:");
     Serial.print(Ps3_data_analog_stick_ry);
     Serial.println();
-    Serial.print('mA:');
-    Serial.print(MotorLeftUp.PWM()*MotorLeftUp.Direction());
-    Serial.print('\t\t\t');
-    Serial.print('mB:');
-    Serial.print(MotorRightUp.PWM()*MotorRightUp.Direction());
+    Serial.print("mA:");
+    Serial.print(MotorLeftUp.PWM());
+    Serial.print("\t\t\t");
+    Serial.print("mB:");
+    Serial.print(MotorRightUp.PWM());
     Serial.println();
-    Serial.print('mC:');
-    Serial.print(MotorLeftDown.PWM()*MotorLeftDown.Direction());
-    Serial.print('\t\t\t');
-    Serial.print('mD:');
-    Serial.print(MotorRightDown.PWM()*MotorRightDown.Direction());
+    Serial.print("mC:");
+    Serial.print(MotorLeftDown.Speed());
+    Serial.print("\t\t\t");
+    Serial.print("mD:");
+    Serial.print(MotorRightDown.Speed());
     Serial.println();
-    Serial.println('-------------------------------------------------------------'):
+    Serial.println("-------------------------------------------------------------");
   }
 }
 
@@ -108,8 +112,8 @@ void notify(){
       MotorLeftDown.Speed(0);       MotorRightDown.Speed(0);
     }
     else if(StickLeft_on_LeftRight){
-      MotorLeftUp.Speed(StickLeft_norm_Xa);         MotorRightUp.Speed(-StickLeft_norm_Xa);
-      MotorLeftDown.Speed(-StickLeft_norm_Xa);       MotorRightDown.Speed(StickLeft_norm_Xa);
+      MotorLeftUp.Speed(StickLeft_norm_X);         MotorRightUp.Speed(-StickLeft_norm_X);
+      MotorLeftDown.Speed(-StickLeft_norm_X);       MotorRightDown.Speed(StickLeft_norm_X);
     }
     else if(StickLeft_on_UpDown){
       MotorLeftUp.Speed(StickLeft_norm_Y);         MotorRightUp.Speed(StickLeft_norm_Y);
@@ -137,47 +141,43 @@ void notify(){
       }
     }
     else if(StickRight_on_Right){ //StickRight to 🡪
-      if(StickLeft_on_Center){
-        MotorLeftUp.Speed(StickRight_norm_X);         MotorRightUp.Speed(-StickRight_norm_X);
-        MotorLeftDown.Speed(StickRight_norm_X);       MotorRightDown.Speed(-StickRight_norm_X);
+      if(StickLeft_on_Center){ //StickLeft to ⌧
+        MotorLeftUp.Speed(StickRight_norm_Xa);         MotorRightUp.Speed(-StickRight_norm_Xa);
+        MotorLeftDown.Speed(StickRight_norm_Xa);       MotorRightDown.Speed(-StickRight_norm_Xa);
       }
-      else if(StickLeft_on_UpDown){
-        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(StickRight_norm_X);
-        MotorLeftDown.Efect(StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_Y);
-      }
-      else if(StickLeft_on_LeftRight){
-        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(-StickRight_norm_Xa);
-        MotorLeftDown.Efect(-StickRight_norm_Xa);       MotorRightDown.Efect(StickRight_norm_Xa);
-      }
-      else if(StickLeft_on_UpRight || StickLeft_on_DownLeft){
-        MotorLeftUp.Efect(StickRight_norm_ABS);                        MotorRightUp.Efect(StickRight_norm_Y-StickRight_norm_X);
-        MotorLeftDown.Efect(StickRight_norm_Y-StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_ABS);
-      }
-      else if(StickLeft_on_UpLeft || StickLeft_on_DownRight){
-        MotorLeftUp.Efect(StickRight_norm_X+StickRight_norm_Y);         MotorRightUp.Efect(StickRight_norm_ABS);
-        MotorLeftDown.Efect(StickRight_norm_ABS);                      MotorRightDown.Efect(StickRight_norm_X+StickRight_norm_Y);
+      else if(StickLeft_on_UpDown){ //StickLeft to ⇵
+        MotorLeftUp.Efect(0);         MotorRightUp.Efect(StickRight_norm_Xa);
+        MotorLeftDown.Efect(0);       MotorRightDown.Efect(StickRight_norm_Xa);
       }
     }
     else if(StickRight_on_Left){  //StickRight to 🡨
       if(StickLeft_on_Center){ //StickLeft to ⌧
-        MotorLeftUp.Speed(-StickRight_norm_X);         MotorRightUp.Speed(StickRight_norm_X);
-        MotorLeftDown.Speed(-StickRight_norm_X);       MotorRightDown.Speed(StickRight_norm_X);
+        MotorLeftUp.Speed(-StickRight_norm_Xa);         MotorRightUp.Speed(StickRight_norm_Xa);
+        MotorLeftDown.Speed(-StickRight_norm_Xa);       MotorRightDown.Speed(StickRight_norm_Xa);
       }
       else if(StickLeft_on_UpDown){ //StickLeft to ⇵
-        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(StickRight_norm_X);
-        MotorLeftDown.Efect(StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_Y);
+        MotorLeftUp.Efect(StickRight_norm_Xa);         MotorRightUp.Efect(0);
+        MotorLeftDown.Efect(StickRight_norm_Xa);       MotorRightDown.Efect(0);
       }
-      else if(StickLeft_on_LeftRight){  //StickLeft to ⇆
-        MotorLeftUp.Efect(StickRight_norm_X);         MotorRightUp.Efect(-StickRight_norm_Xa);
-        MotorLeftDown.Efect(-StickRight_norm_Xa);       MotorRightDown.Efect(StickRight_norm_Xa);
+    }
+    else if(StickRight_on_Up){
+      if(StickLeft_on_Right){ //StickLeft to 🡨
+        MotorLeftUp.Efect(StickRight_norm_Ya);         MotorRightUp.Efect(StickRight_norm_Ya);
+        MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
       }
-      else if(StickLeft_on_UpRight || StickLeft_on_DownLeft){
-        MotorLeftUp.Efect(StickRight_norm_ABS);                        MotorRightUp.Efect(StickRight_norm_Y-StickRight_norm_X);
-        MotorLeftDown.Efect(StickRight_norm_Y-StickRight_norm_X);       MotorRightDown.Efect(StickRight_norm_ABS);
+      else if(StickLeft_on_Left){ //StickLeft to 🡨
+        MotorLeftUp.Efect(StickRight_norm_Ya);         MotorRightUp.Efect(StickRight_norm_Ya);
+        MotorLeftDown.Efect(0);       MotorRightDown.Efect(0);
       }
-      else if(StickLeft_on_UpLeft || StickLeft_on_DownRight){
-        MotorLeftUp.Efect(StickRight_norm_X+StickRight_norm_Y);         MotorRightUp.Efect(StickRight_norm_ABS);
-        MotorLeftDown.Efect(StickRight_norm_ABS);                      MotorRightDown.Efect(StickRight_norm_X+StickRight_norm_Y);
+    }
+    else if(StickRight_on_Down){
+      if(StickLeft_on_Right){ //StickLeft to 🡨
+        MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
+        MotorLeftDown.Efect(StickRight_norm_Ya);       MotorRightDown.Efect(StickRight_norm_Ya);
+      }
+      else if(StickLeft_on_Left){ //StickLeft to 🡨
+        MotorLeftUp.Efect(0);         MotorRightUp.Efect(0);
+        MotorLeftDown.Efect(StickRight_norm_Ya);       MotorRightDown.Efect(StickRight_norm_Ya);
       }
     }
     logData(Show);

@@ -40,14 +40,14 @@ class Motor{
     //Motor (Pin_EN, Pin_IN1, Pin_IN2, route = routeA)
     Motor(uint8_t pin_EN, uint8_t pin_IN1, uint8_t pin_IN2, motorWires route = routeA);
     void begin();
-    void Speed(int8_t speed);
-    void Speed(int8_t speed, motorDirection forceDirection);
-    int8_t Speed();
-    void Efect(int8_t efect);
-    int8_t Efect();
-    int8_t PWM();
+    void Speed(int speed);
+    void Speed(int speed, motorDirection forceDirection);
+    int Speed();
+    void Efect(int efect);
+    int Efect();
+    int PWM();
     motorDirection Direction();
-    void count
+
   private:
     //Pins
     uint8_t _pin_EN;
@@ -56,14 +56,9 @@ class Motor{
     uint8_t _pin_IN2;
 
     //Values
-    int8_t _speed;
-    int8_t _efect;
-    int8_t _PWM;
-
-    //encoder
-    uint8_t _faseA;
-    uint8_t _faseB;
-    uint8_t _RPM;
+    int _speed;
+    int _efect;
+    int _PWM;
 
     motorDirection _direction;
 };

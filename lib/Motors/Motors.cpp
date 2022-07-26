@@ -30,10 +30,10 @@ void Motor::begin(){
     analogWriteChannel(_pin_IN2);
 }
 
-void Motor::Speed(int8_t speed){
+void Motor::Speed(int speed){
     _speed = abs(speed)>100?100:speed;
-    uint8_t speed2PWM = map(abs(_speed),0,100,0,255);
-    _PWM = speed2PWM-map(_efect,0,100,0,speed2PWM);
+    int speed2PWM = map(abs(_speed),0,100,0,255);
+    _PWM = speed2PWM - map(_efect,0,100,0,speed2PWM);
     digitalWrite(_pin_EN, LOW);
     if(_speed == 0) {
         _direction = Stoped;
@@ -53,7 +53,7 @@ void Motor::Speed(int8_t speed){
     digitalWrite(_pin_EN, HIGH);
 };
 
-void Motor::Speed(int8_t speed, motorDirection forceDirection){
+void Motor::Speed(int speed, motorDirection forceDirection){
     _speed = speed;
     _direction = forceDirection;
     if(_direction == Forward) {
@@ -68,19 +68,20 @@ void Motor::Speed(int8_t speed, motorDirection forceDirection){
     digitalWrite(_pin_EN, HIGH);
 };
 
-int8_t Motor::Speed(){
+int Motor::Speed(){
     return _speed;
 };
 
-void Motor::Efect(int8_t efect){
-    _efect = efect;
+void Motor::Efect(int efect){
+    _efect = abs(efect);
     Speed(_speed);
 };
 
-int8_t Motor::Efect(){
+int Motor::Efect(){
     return _efect;
 };
-int8_t Motor::PWM(){
+
+int Motor::PWM(){
     return _PWM;
 };
 
