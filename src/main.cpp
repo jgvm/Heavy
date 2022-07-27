@@ -99,11 +99,7 @@ void logData(bool active){
     Serial.print("mD:");
     Serial.print(MotorRightDown.Speed());
     Serial.println();
-<<<<<<< HEAD
-    Serial.println('-------------------------------------------------------------');
-=======
     Serial.println("-------------------------------------------------------------");
->>>>>>> Math
   }
 }
 
