@@ -29,13 +29,13 @@ const int range = 20;
 #define StickLeft_norm_ABS  ((Ps3_data_analog_stick_lx_a>Ps3_data_analog_stick_ly_a)?StickLeft_norm_X:((Ps3_data_analog_stick_lx_a<Ps3_data_analog_stick_ly_a)?StickLeft_norm_Y:((StickLeft_norm_X/StickLeft_norm_Y)*StickLeft_norm_X)))
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
-#define StickLeft_on_Center     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a<range)) //⌧
-#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range*4)) //⇆
-#define StickLeft_on_Right        ((Ps3_data_analog_stick_lx>0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡪
-#define StickLeft_on_Left         ((Ps3_data_analog_stick_lx<0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡨
+#define StickLeft_on_Center     ((Ps3_data_analog_stick_lx_a<range/2)&&(Ps3_data_analog_stick_ly_a<range/2)) //⌧
+#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range)) //⇆
+#define StickLeft_on_Right        ((Ps3_data_analog_stick_lx>0)&&(Ps3_data_analog_stick_ly_a<range)) //🡪
+#define StickLeft_on_Left         ((Ps3_data_analog_stick_lx<0)&&(Ps3_data_analog_stick_ly_a<range)) //🡨
 #define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly_a!=0)) //⇵
-#define StickLeft_on_Up           ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly>0)) //⇵
-#define StickLeft_on_Down         ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly<0)) //⇵
+#define StickLeft_on_Up           ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly>0)) //🡩
+#define StickLeft_on_Down         ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly<0)) //🡫
 #define StickLeft_on_UpRight    ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a>0))      //⦬|⦨
 #define StickLeft_on_DownLeft   ((Ps3_data_analog_stick_lx_a<0)&&(Ps3_data_analog_stick_ly_a>0))      //⦫|⦯
 #define StickLeft_on_DownRight  ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a<0))      //⦮|⦪
@@ -57,13 +57,13 @@ const int range = 20;
 #define StickRight_norm_ABS  ((Ps3_data_analog_stick_rx_a>Ps3_data_analog_stick_ry_a)?StickRight_norm_X:((Ps3_data_analog_stick_rx_a<Ps3_data_analog_stick_ry_a)?StickRight_norm_Y:((StickRight_norm_X/StickRight_norm_Y)*StickRight_norm_X)))
 
 // Ranges Right Stick -- Forward, Backward, Right, Left
-#define StickRight_on_Center     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a<range)) //⌧
-#define StickRight_on_LeftRight  ((Ps3_data_analog_stick_rx_a!=0)&&(Ps3_data_analog_stick_ry_a<range))    //⇆
-#define StickRight_on_Right        ((Ps3_data_analog_stick_rx>0)&&(Ps3_data_analog_stick_ry_a<range))     //🡪
-#define StickRight_on_Left         ((Ps3_data_analog_stick_rx<0)&&(Ps3_data_analog_stick_ry_a<range))     //🡨
-#define StickRight_on_UpDown     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a!=0))    //⇵
-#define StickRight_on_Up           ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry>0))     //🡩
-#define StickRight_on_Down         ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry<0))     //🡫
+#define StickRight_on_Center     ((Ps3_data_analog_stick_rx_a<range/2)&&(Ps3_data_analog_stick_ry_a<range/2)) //⌧
+#define StickRight_on_LeftRight  ((Ps3_data_analog_stick_rx_a!=0)&&(Ps3_data_analog_stick_ry_a<range*4))    //⇆
+#define StickRight_on_Right        ((Ps3_data_analog_stick_rx>0)&&(Ps3_data_analog_stick_ry_a<range*4))     //🡪
+#define StickRight_on_Left         ((Ps3_data_analog_stick_rx<0)&&(Ps3_data_analog_stick_ry_a<range*4))     //🡨
+#define StickRight_on_UpDown     ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry_a!=0))    //⇵
+#define StickRight_on_Up           ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry>0))     //🡩
+#define StickRight_on_Down         ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry<0))     //🡫
 #define StickRight_on_UpRight    ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a>0))         //⦬|⦨
 #define StickRight_on_DownLeft   ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))         //⦫|⦯
 #define StickRight_on_DownRight  ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a<0))         //⦮|⦪

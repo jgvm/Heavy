@@ -35,6 +35,15 @@ enum motorDirection {
   Backward=1
 };
 
+
+/**
+ *  Quadrature mode configuration structure
+ */
+enum Quadrature : uint8_t {
+  ON    = 0x00, //!<  Enable quadrature mode CPR = 4xPPR
+  OFF   = 0x01  //!<  Disable quadrature mode / CPR = PPR
+};
+
 class Motor{
   public:
     //Motor (Pin_EN, Pin_IN1, Pin_IN2, route = routeA)
@@ -47,6 +56,8 @@ class Motor{
     int Efect();
     int PWM();
     motorDirection Direction();
+
+
 
   private:
     //Pins
@@ -62,11 +73,51 @@ class Motor{
     motorDirection _direction;
     
     //Encoder
+
+    /**
+     *  function enabling hardware interrupts for the encoder channels with provided callback functions
+     *  if callback is not provided then the interrupt is not enabled
+     * 
+     * @param doA pointer to the A channel interrupt handler function
+     * @param doB pointer to the B channel interrupt handler function
+     * @param doIndex pointer to the Index channel interrupt handler function
+     * 
+     */
+    void _enableInterrupts(void (*doA)() = nullptr, void(*doB)() = nullptr, void(*doIndex)() = nullptr);
+    
+    //  Encoder interrupt callback functions
+    /** A channel callback function */
+    void _handleA();
+    /** B channel callback function */
+    void _handleB();
+    /** Index channel callback function */
+    void _handleIndex();
+
+
     long _pulses;
     int _rpm;
-    uint8_t _pin_phaseA;
-    uint8_t _pin_phaseB;
-    void _atachEncoder( isr);
-    void _readEncoder();
+
+    int pinA; //!< encoder hardware pin A
+    int pinB; //!< encoder hardware pin B
+    int index_pin; //!< index pin
+
+     // Encoder configuration
+    Pullup pullup; //!< Configuration parameter internal or external pullups
+    Quadrature quadrature;//!< Configuration parameter enable or disable quadrature mode
+    float cpr;//!< encoder cpr number
+
+
+    int hasIndex(); //!< function returning 1 if encoder has index pin and 0 if not.
+
+    volatile long pulse_counter;//!< current pulse counter
+    volatile long pulse_timestamp;//!< last impulse timestamp in us
+    volatile int A_active; //!< current active states of A channel
+    volatile int B_active; //!< current active states of B channel
+    volatile int I_active; //!< current active states of Index channel
+    volatile bool index_found = false; //!< flag stating that the index has been found
+
+    // velocity calculation variables
+    float prev_Th, pulse_per_second;
+    volatile long prev_pulse_counter, prev_timestamp_us;
 };
 #endif

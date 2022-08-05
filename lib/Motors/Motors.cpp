@@ -89,6 +89,7 @@ motorDirection Motor::Direction(){
     return _direction;
 };
 
-void Motor::_atachEncoder(isr){
-    attachInterrupt(digitalPinToInterrupt(_pin_phaseA), isr,RISING)
+void Motor::_atachEncoder(void (*doA)() = nullptr, void(*doB)() = nullptr, void(*doIndex)() = nullptr){
+    if(doA != nullptr) attachInterrupt(digitalPinToInterrupt(_phaseA_Pin), ISR, CHANGE);
+    if(ISR != nullptr) attachInterrupt(digitalPinToInterrupt(_phaseB_Pin), ISR, CHANGE);
 };
