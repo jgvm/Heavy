@@ -14,7 +14,7 @@ int battery = 0;
 const int range = 20;
 
 
-#define Weapon 23
+#define Weapon 23 //Pin del arma
 bool WeaponValue = LOW;
 
 // Values Left Stick
