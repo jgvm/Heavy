@@ -13,6 +13,10 @@ int battery = 0;
 
 const int range = 20;
 
+
+#define Weapon 23
+bool WeaponValue = LOW;
+
 // Values Left Stick
 #define Ps3_data_analog_stick_lx (Ps3.data.analog.stick.lx)
 #define Ps3_data_analog_stick_ly (-Ps3.data.analog.stick.ly)
@@ -30,12 +34,12 @@ const int range = 20;
 
 // Ranges Left Stick -- Forward, Backward, Right, Left
 #define StickLeft_on_Center     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a<range)) //⌧
-#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range*4)) //⇆
-#define StickLeft_on_Right        ((Ps3_data_analog_stick_lx>0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡪
-#define StickLeft_on_Left         ((Ps3_data_analog_stick_lx<0)&&(Ps3_data_analog_stick_ly_a<range*4)) //🡨
-#define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly_a!=0)) //⇵
-#define StickLeft_on_Up           ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly>0)) //⇵
-#define StickLeft_on_Down         ((Ps3_data_analog_stick_lx_a<range*4)&&(Ps3_data_analog_stick_ly<0)) //⇵
+#define StickLeft_on_LeftRight  ((Ps3_data_analog_stick_lx_a!=0)&&(Ps3_data_analog_stick_ly_a<range)) //⇆
+#define StickLeft_on_Right        ((Ps3_data_analog_stick_lx>0)&&(Ps3_data_analog_stick_ly_a<range)) //🡪
+#define StickLeft_on_Left         ((Ps3_data_analog_stick_lx<0)&&(Ps3_data_analog_stick_ly_a<range)) //🡨
+#define StickLeft_on_UpDown     ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly_a!=0)) //⇵
+#define StickLeft_on_Up           ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly>0)) //⇵
+#define StickLeft_on_Down         ((Ps3_data_analog_stick_lx_a<range)&&(Ps3_data_analog_stick_ly<0)) //⇵
 #define StickLeft_on_UpRight    ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a>0))      //⦬|⦨
 #define StickLeft_on_DownLeft   ((Ps3_data_analog_stick_lx_a<0)&&(Ps3_data_analog_stick_ly_a>0))      //⦫|⦯
 #define StickLeft_on_DownRight  ((Ps3_data_analog_stick_lx_a>0)&&(Ps3_data_analog_stick_ly_a<0))      //⦮|⦪
@@ -58,18 +62,18 @@ const int range = 20;
 
 // Ranges Right Stick -- Forward, Backward, Right, Left
 #define StickRight_on_Center     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a<range)) //⌧
-#define StickRight_on_LeftRight  ((Ps3_data_analog_stick_rx_a!=0)&&(Ps3_data_analog_stick_ry_a<range))    //⇆
-#define StickRight_on_Right        ((Ps3_data_analog_stick_rx>0)&&(Ps3_data_analog_stick_ry_a<range))     //🡪
-#define StickRight_on_Left         ((Ps3_data_analog_stick_rx<0)&&(Ps3_data_analog_stick_ry_a<range))     //🡨
-#define StickRight_on_UpDown     ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry_a!=0))    //⇵
-#define StickRight_on_Up           ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry>0))     //🡩
-#define StickRight_on_Down         ((Ps3_data_analog_stick_rx_a<range)&&(Ps3_data_analog_stick_ry<0))     //🡫
+#define StickRight_on_LeftRight  ((Ps3_data_analog_stick_rx_a!=0)&&(Ps3_data_analog_stick_ry_a<range*4))    //⇆
+#define StickRight_on_Right        ((Ps3_data_analog_stick_rx>0)&&(Ps3_data_analog_stick_ry_a<range*4))     //🡪
+#define StickRight_on_Left         ((Ps3_data_analog_stick_rx<0)&&(Ps3_data_analog_stick_ry_a<range*4))     //🡨
+#define StickRight_on_UpDown     ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry_a!=0))    //⇵
+#define StickRight_on_Up           ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry>0))     //🡩
+#define StickRight_on_Down         ((Ps3_data_analog_stick_rx_a<range*4)&&(Ps3_data_analog_stick_ry<0))     //🡫
 #define StickRight_on_UpRight    ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a>0))         //⦬|⦨
 #define StickRight_on_DownLeft   ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))         //⦫|⦯
 #define StickRight_on_DownRight  ((Ps3_data_analog_stick_rx_a>0)&&(Ps3_data_analog_stick_ry_a<0))         //⦮|⦪
 #define StickRight_on_UpLeft     ((Ps3_data_analog_stick_rx_a<0)&&(Ps3_data_analog_stick_ry_a>0))         //⦩|⦭
 
-#define Show true
+#define Show false
 
 void logData(bool active){
   if(active){
@@ -94,10 +98,13 @@ void logData(bool active){
     Serial.print(MotorRightUp.PWM());
     Serial.println();
     Serial.print("mC:");
-    Serial.print(MotorLeftDown.Speed());
+    Serial.print(MotorLeftDown.PWM());
     Serial.print("\t\t\t");
     Serial.print("mD:");
-    Serial.print(MotorRightDown.Speed());
+    Serial.print(MotorRightDown.PWM());
+    Serial.print("\t\t\t");
+    Serial.print("Wp:");
+    Serial.print(WeaponValue);
     Serial.println();
     Serial.println("-------------------------------------------------------------");
   }
@@ -105,7 +112,7 @@ void logData(bool active){
 
 void notify(){
   //---------------- Analog stick value events ---------------
-  //Event Left stick 
+  //Event Left stick
   if( (abs(Ps3.event.analog_changed.stick.lx) + abs(Ps3.event.analog_changed.stick.ly) > 2)){
     if(StickLeft_on_Center){
       MotorLeftUp.Speed(0);         MotorRightUp.Speed(0);
@@ -160,6 +167,7 @@ void notify(){
         MotorLeftDown.Efect(StickRight_norm_Xa);       MotorRightDown.Efect(0);
       }
     }
+
     else if(StickRight_on_Up){//R🡩
       if(StickLeft_on_Right){ //L🡨
         MotorLeftUp.Efect(StickRight_norm_Ya);         MotorRightUp.Efect(StickRight_norm_Ya);
@@ -182,6 +190,18 @@ void notify(){
     }
     logData(Show);
   }
+
+    // Triger digital event
+  if( Ps3.event.button_down.r2 ) {
+    WeaponValue = HIGH;
+    digitalWrite(Weapon, WeaponValue);
+    logData(Show);
+  }
+  if( Ps3.event.button_up.r2 ){
+    WeaponValue = LOW;
+    digitalWrite(Weapon, WeaponValue);
+    logData(Show);
+  }
 }
 
 void onConnect(){
@@ -200,6 +220,8 @@ void setup()
   MotorRightDown.begin();
   MotorLeftDown.begin();
   MotorLeftUp.begin();
+  pinMode(Weapon, OUTPUT);
+  digitalWrite(Weapon, WeaponValue);
   Serial.begin(115200);
   Ps3.attach(notify);
   Ps3.attachOnConnect(onConnect);
